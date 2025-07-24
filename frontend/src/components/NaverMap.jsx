@@ -92,7 +92,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) { // onMapLoad 프롭
       // document.head.removeChild(script);
       // map 인스턴스 정리 (필요하다면)
     };
-  }, [stores, center, selected]); // 의존성 배열에 onMapLoad는 넣지 않아도 됨
+  }, [stores, center, selected]); // 의존성 배열에 onMapLoad는 넣지 않아도 됨 dd
 
   return <div id="map" className="w-full h-full" style={{ minHeight: "500px" }}></div>;
 }
