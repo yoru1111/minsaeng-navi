@@ -32,7 +32,7 @@ function Tab2MapPage() {
     "제주도": { lat: 33.4996, lng: 126.5312 }
   };
 
-  // 초기: 도 단위 중심 설정
+  // 초기: 도 단위 중심 설정 테스트
   useEffect(() => {
     if (location.state?.area) {
       const region = location.state.area;
