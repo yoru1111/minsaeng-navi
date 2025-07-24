@@ -23,11 +23,16 @@ function Tab1SelectPage() {
       <CategorySelector onChange={(selected) => setCategories(selected)} />
 
       <button
-        onClick={() =>
+       onClick={() =>
           navigate("/map", {
-            state: { area, si, categories },
+            state: {
+              area,       // 도
+              si,         // 시
+              categories  // ['food', 'it', ...]
+            }
           })
         }
+
         className="bg-blue-500 text-white px-6 py-2 rounded mt-8"
       >
         지도 보기
