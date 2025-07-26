@@ -35,8 +35,14 @@ function Tab1SelectPage() {
           <AreaSelector
             onSelect={({ type, value, parent }) => {
               setTimeout(() => {
-                if (type === "도") setArea(value);
-                if (type === "시") setSi(value);
+                if (type === "도") {
+                  setArea(value);
+                  setSi('');
+                }
+                if (type === "시") {
+                  setArea(parent);
+                  setSi(value);
+                }
                 setError(""); // 지역 선택 시 에러 메시지 제거
               }, 0);
             }}
