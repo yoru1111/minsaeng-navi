@@ -34,9 +34,11 @@ function Tab1SelectPage() {
         <div className="flex flex-col items-center w-full" style={{ minHeight: 120 }}>
           <AreaSelector
             onSelect={({ type, value, parent }) => {
-              if (type === "도") setArea(value);
-              if (type === "시") setSi(value);
-              setError(""); // 지역 선택 시 에러 메시지 제거
+              setTimeout(() => {
+                if (type === "도") setArea(value);
+                if (type === "시") setSi(value);
+                setError(""); // 지역 선택 시 에러 메시지 제거
+              }, 0);
             }}
           />
         </div>
@@ -44,8 +46,10 @@ function Tab1SelectPage() {
         <h1 className="text-2xl font-bold mb-4">관심분야 선택</h1>
         <CategorySelector
           onChange={(selected) => {
-            setCategories(selected);
-            setError(""); // 관심분야 선택 시 에러 메시지 제거
+            setTimeout(() => {
+              setCategories(selected);
+              setError(""); // 관심분야 선택 시 에러 메시지 제거
+            }, 0);
           }}
         />
 
