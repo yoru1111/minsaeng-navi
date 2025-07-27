@@ -326,7 +326,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
         document.head.removeChild(script);
       }
     };
-  }, []);
+  }, []); // 수정한 부분
 
   // 마커 업데이트
   useEffect(() => {
