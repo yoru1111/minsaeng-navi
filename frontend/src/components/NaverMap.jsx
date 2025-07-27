@@ -8,6 +8,24 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
   const [markers, setMarkers] = useState([]);
   const [infoWindows, setInfoWindows] = useState([]);
 
+  const onZoomIn = () => {
+    if (map) {
+      map.setZoom(map.getZoom() + 1);
+    }
+  };
+
+  const onZoomOut = () => {
+    if (map) {
+      map.setZoom(map.getZoom() - 1);
+    }
+  };
+  
+  const onCenter = () => {
+    if (map) {
+      map.setCenter(new window.naver.maps.LatLng(center.lat, center.lng));
+    }
+  };
+
   // 사용자 위치 가져오기
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -326,7 +344,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
         document.head.removeChild(script);
       }
     };
-  }, [center.lat, center.lng, onMapLoad, showDirections, clearDirections]);
+  }, []);
 
   // 마커 업데이트
   useEffect(() => {
@@ -356,7 +374,9 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
   return (
     <div className="relative w-full h-full">
       <div id="map" className="w-full h-full" style={{ height: "100vh", minHeight: "600px" }}></div>
-      <div className="absolute top-4 left-4 z-10 bg-white p-3 rounded-lg shadow-lg">
+      
+      {/* 왼쪽 하단: 위치 및 경로 컨트롤 */}
+      <div className="absolute bottom-4 left-4 z-10 bg-white p-3 rounded-lg shadow-lg">
         <button 
           onClick={getUserLocation}
           className="bg-blue-500 text-white px-3 py-2 rounded text-sm mr-2 hover:bg-blue-600 transition-colors"
@@ -368,6 +388,28 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
           className="bg-gray-500 text-white px-3 py-2 rounded text-sm hover:bg-gray-600 transition-colors"
         >
           🗑️ 경로 지우기
+        </button>
+      </div>
+
+      {/* 오른쪽 상단: 지도 컨트롤 */}
+      <div className="absolute top-14 right-4 z-10 flex flex-col gap-2">
+        <button 
+          className="bg-white px-4 py-2 shadow rounded hover:bg-gray-50 transition-colors" 
+          onClick={onZoomIn}
+        >
+          ＋ 확대
+        </button>
+        <button 
+          className="bg-white px-4 py-2 shadow rounded hover:bg-gray-50 transition-colors" 
+          onClick={onZoomOut}
+        >
+          － 축소
+        </button>
+        <button 
+          className="bg-white px-4 py-2 shadow rounded hover:bg-gray-50 transition-colors" 
+          onClick={onCenter}
+        >
+          📍 현위치
         </button>
       </div>
     </div>

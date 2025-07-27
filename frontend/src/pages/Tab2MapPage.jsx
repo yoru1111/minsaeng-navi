@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import DirectionsBox from "../components/DirectionsBox";
-import MapControls from "../components/MapControls";
 import NaverMap from "../components/NaverMap";
 
 function Tab2MapPage() {
@@ -392,14 +391,11 @@ function Tab2MapPage() {
 
         {/* 지도 */}
          <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
-          <div className="absolute top-4 right-4 z-10">
-            <MapControls />
-          </div>
-          <div className="w-full h-full">
-            <NaverMap
-              stores={filteredStores}
-              center={center}
-              selected={selectedStore}
+           <div className="w-full h-full">
+             <NaverMap
+               stores={filteredStores}
+               center={center}
+               selected={selectedStore}
                onMapLoad={setMapInstance}
             />
           </div>
