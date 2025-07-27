@@ -274,7 +274,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     // Client ID 설정
     const clientId = process.env.REACT_APP_NAVER_CLIENT_ID || "7b1jwmp7eq";
     
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}&submodules=directions`;
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}&submodules=directions,geocoder`;
 
     script.async = true;
     script.onload = () => {
@@ -337,14 +337,16 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
 
   // 선택된 매장에 지도 중심 이동
   useEffect(() => {
-    if (selected && map) {
-      const target = markers.find((m) => m.store.id === selected.id);
-      if (target) {
-        map.setCenter(target.marker.getPosition());
-        map.setZoom(16);
-      }
+  if (selected && map) {
+    const target = markers.find((m) => m.store.id === selected.id);
+    if (target) {
+      map.setCenter(target.marker.getPosition());
+      map.setZoom(16);
+      const matchedInfoWindow = infoWindows.find((iw, i) => markers[i].store.id === selected.id);
+      matchedInfoWindow?.open(map, target.marker);
     }
-  }, [selected, map, markers]);
+  }
+}, [selected, map, markers, infoWindows]);
 
   // 중심점 변경 시 지도 이동
   useEffect(() => {

@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import DirectionsBox from "../components/DirectionsBox";
 import MapControls from "../components/MapControls";
 import NaverMap from "../components/NaverMap";
+import SearchBox from "../components/SearchBox"; // 추가
 
 function Tab2MapPage() {
   const location = useLocation();
@@ -355,6 +356,10 @@ function Tab2MapPage() {
       <div className="flex flex-1">
         {/* 왼쪽 사이드바 */}
         <div className="w-[300px] bg-white shadow px-4 py-6 overflow-y-auto">
+          <SearchBox onSearch={(coords) => {
+  setCenter(coords);
+  mapInstance?.panTo(new window.naver.maps.LatLng(coords.lat, coords.lng));
+}} />
           <DirectionsBox onSearch={setSearchTerm} stores={stores} />
           <div className="mt-6 space-y-4">
             {filteredStores.length === 0 ? (

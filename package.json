@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/navermaps": "^3.9.1",
     "mongoose": "^8.16.4"
   }
 }
