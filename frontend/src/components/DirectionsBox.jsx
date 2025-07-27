@@ -13,9 +13,14 @@ function DirectionsBox({ onSearch, stores }) {
     );
 
     if (matched) {
-      const { lat, lng, name } = matched;
-      const directionUrl = `https://map.naver.com/v5/directions?c=15.00,0,0,0,dh&destination=${lng},${lat},${name},PLACE`;
-      window.open(directionUrl, "_blank");
+      const { lat, lng } = matched;
+      // 내장 네이버 지도 API 길찾기 기능 사용
+      if (window.showDirections) {
+        window.showDirections(lat, lng);
+      } else {
+        // 지도가 아직 로드되지 않은 경우 안내 메시지
+        alert("지도가 로드 중입니다. 잠시 후 다시 시도해주세요.");
+      }
     } else {
       alert("해당 이름의 매장을 찾을 수 없습니다.");
     }
