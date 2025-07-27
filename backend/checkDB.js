@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 async function checkDB() {
   try {
     // MongoDB 연결
-    await mongoose.connect('mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/minsaeng-navi');
+    await mongoose.connect('mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/minsaeng-navi?retryWrites=true&w=majority');
     console.log('MongoDB 연결 성공');
 
     // 데이터베이스 및 컬렉션 정보 확인

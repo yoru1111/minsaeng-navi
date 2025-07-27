@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/stores', storeRoutes);
 
 // DB 연결 후 서버 실행
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/minsaeng-navi')
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/minsaeng-navi?retryWrites=true&w=majority')
   .then(() => {
     console.log('✅ MongoDB 연결 완료');
     app.listen(PORT, () => console.log(`🚀 서버 실행 중: http://localhost:${PORT}`));
