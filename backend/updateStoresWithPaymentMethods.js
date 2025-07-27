@@ -4,7 +4,7 @@ import Store from './models/store.js';
 async function updateStoresWithPaymentMethods() {
   try {
     // MongoDB 연결
-    await mongoose.connect('mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/');
+    await mongoose.connect('mongodb+srv://jsw11062004:PVoLskNeCrFDm9wy@cluster0.axtl0cz.mongodb.net/minsaeng-navi?retryWrites=true&w=majority');
     console.log('MongoDB 연결 성공');
 
     // 모든 매장 조회
