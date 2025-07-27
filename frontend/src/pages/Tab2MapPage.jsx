@@ -14,7 +14,7 @@ function Tab2MapPage() {
   const [mapInstance, setMapInstance] = useState(null);
 
   // 도별 중심 좌표
-  const regionCenterMap = {
+  const regionCenterMap = useMemo(() => ({
     "서울특별시": { lat: 37.5665, lng: 126.9780 },
     "부산광역시": { lat: 35.1796, lng: 129.0756 },
     "대구광역시": { lat: 35.8714, lng: 128.6014 },
@@ -32,10 +32,10 @@ function Tab2MapPage() {
     "경상북도": { lat: 36.5, lng: 128.7 },
     "경상남도": { lat: 35.3, lng: 128.3 },
     "제주특별자치도": { lat: 33.4996, lng: 126.5312 },
-  };
+  }), []);
 
   // 시군구별 중심 좌표 (주요 지역들)
-  const siCenterMap = {
+  const siCenterMap = useMemo(() => ({
     // 서울특별시
     "강남구": { lat: 37.5172, lng: 127.0473 },
     "강동구": { lat: 37.5301, lng: 127.1238 },
@@ -268,7 +268,7 @@ function Tab2MapPage() {
     // 제주특별자치도
     "제주시": { lat: 33.4996, lng: 126.5312 },
     "서귀포시": { lat: 33.2541, lng: 126.5600 },
-  };
+  }), []);
 
   // 지역 선택 시 지도 이동 함수 (useCallback으로 최적화)
   const moveToRegion = useCallback((doName, siName = null) => {
@@ -302,7 +302,7 @@ function Tab2MapPage() {
     if (mapInstance) {
       mapInstance.panTo(new window.naver.maps.LatLng(targetCenter.lat, targetCenter.lng));
     }
-  }, [mapInstance]);
+  }, [mapInstance, regionCenterMap, siCenterMap]);
 
   // 초기: 도 단위 중심 설정
   useEffect(() => {
@@ -313,12 +313,19 @@ function Tab2MapPage() {
     }
   }, [location.state, moveToRegion]);
 
-  // 매장 데이터 로드
+  // 매장 데이터 로드 (MongoDB에서 가져오기)
   useEffect(() => {
-    fetch("/stores.json")
+    fetch("http://localhost:5000/stores")
       .then((res) => res.json())
       .then((data) => setStores(data))
-      .catch(console.error);
+      .catch((error) => {
+        console.error("매장 데이터 로드 실패:", error);
+        // 폴백: 로컬 JSON 파일 사용
+        fetch("/stores.json")
+          .then((res) => res.json())
+          .then((data) => setStores(data))
+          .catch(console.error);
+      });
   }, []);
 
   // 필터링된 매장 (useMemo로 최적화)
@@ -365,17 +372,17 @@ function Tab2MapPage() {
                   <p className="text-sm text-gray-600">{store.address}</p>
                   <button
                     onClick={() => {
-                      // 네이버 지도 API 길찾기 기능 사용
+                      // 내장 네이버 지도 API 길찾기 기능 사용
                       if (window.showDirections) {
                         window.showDirections(store.lat, store.lng);
                       } else {
-                        // 폴백: 네이버 지도 웹사이트로 이동
-                        window.open(`https://map.naver.com/v5/directions?c=15.00,0,0,0,dh&destination=${store.lng},${store.lat},${store.name},PLACE`, '_blank');
+                        // 지도가 아직 로드되지 않은 경우 안내 메시지
+                        alert("지도가 로드 중입니다. 잠시 후 다시 시도해주세요.");
                       }
                     }}
-                    className="mt-2 inline-block px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                    className="mt-2 inline-block px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
                   >
-                    길찾기
+                    🚗 길찾기
                   </button>
                 </div>
               ))

@@ -37,9 +37,20 @@ const storeSchema = new mongoose.Schema({
       required: true
     }
   },
+  // 충전식 카드 취급여부
   usable_with_fund: {
     type: Boolean,
-    default: true
+    default: false
+  },
+  // 지류 취급여부
+  accepts_paper: {
+    type: Boolean,
+    default: false
+  },
+  // 모바일 취급여부
+  accepts_mobile: {
+    type: Boolean,
+    default: false
   },
   has_coupon_sticker: {
     type: Boolean,
