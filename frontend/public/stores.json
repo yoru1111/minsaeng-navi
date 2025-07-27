@@ -1,0 +1,1314 @@
+[
+  {
+    "id": 1,
+    "name": "의정부시 펫스토어 78",
+    "address": "경기도 의정부시 중심로 27",
+    "lat": 37.309191,
+    "lng": 126.833987,
+    "available": false,
+    "category": "pet"
+  },
+  {
+    "id": 2,
+    "name": "김포시 갤러리 34",
+    "address": "경기도 김포시 중심로 139",
+    "lat": 37.182297,
+    "lng": 126.853797,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 3,
+    "name": "부천시 문화센터 19",
+    "address": "경기도 부천시 중심로 141",
+    "lat": 37.324044,
+    "lng": 126.891245,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 4,
+    "name": "의정부시 쇼핑몰 10",
+    "address": "경기도 의정부시 중심로 181",
+    "lat": 37.218593,
+    "lng": 127.167769,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 5,
+    "name": "고양시 갤러리 49",
+    "address": "경기도 고양시 중심로 77",
+    "lat": 37.242971,
+    "lng": 127.090768,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 6,
+    "name": "용인시 여행사 5",
+    "address": "경기도 용인시 중심로 37",
+    "lat": 37.249374,
+    "lng": 126.943035,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 7,
+    "name": "안양시 패션샵 62",
+    "address": "경기도 안양시 중심로 115",
+    "lat": 37.399466,
+    "lng": 126.881707,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 8,
+    "name": "용인시 쇼핑몰 60",
+    "address": "경기도 용인시 중심로 52",
+    "lat": 37.647223,
+    "lng": 127.009074,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 9,
+    "name": "안산시 패션샵 87",
+    "address": "경기도 안산시 중심로 178",
+    "lat": 37.489111,
+    "lng": 127.063263,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 10,
+    "name": "안양시 헬스장 63",
+    "address": "경기도 안양시 중심로 119",
+    "lat": 37.534343,
+    "lng": 127.152547,
+    "available": true,
+    "category": "sports"
+  },
+  {
+    "id": 11,
+    "name": "부천시 여행사 18",
+    "address": "경기도 부천시 중심로 3",
+    "lat": 37.26146,
+    "lng": 126.793267,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 12,
+    "name": "용인시 쇼핑몰 28",
+    "address": "경기도 용인시 중심로 80",
+    "lat": 37.34195,
+    "lng": 126.902321,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 13,
+    "name": "부천시 맛집 30",
+    "address": "경기도 부천시 중심로 9",
+    "lat": 37.397474,
+    "lng": 127.056386,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 14,
+    "name": "김포시 IT카페 81",
+    "address": "경기도 김포시 중심로 195",
+    "lat": 37.580205,
+    "lng": 127.162645,
+    "available": true,
+    "category": "it"
+  },
+  {
+    "id": 15,
+    "name": "수원시 약국 30",
+    "address": "경기도 수원시 중심로 153",
+    "lat": 37.357933,
+    "lng": 127.039612,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 16,
+    "name": "성남시 패션샵 60",
+    "address": "경기도 성남시 중심로 41",
+    "lat": 37.173408,
+    "lng": 127.038092,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 17,
+    "name": "수원시 맛집 83",
+    "address": "경기도 수원시 중심로 9",
+    "lat": 37.686586,
+    "lng": 127.077514,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 18,
+    "name": "용인시 기타존 40",
+    "address": "경기도 용인시 중심로 95",
+    "lat": 37.664948,
+    "lng": 127.03642,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 19,
+    "name": "김포시 학원 60",
+    "address": "경기도 김포시 중심로 51",
+    "lat": 37.643513,
+    "lng": 126.860925,
+    "available": true,
+    "category": "education"
+  },
+  {
+    "id": 20,
+    "name": "김포시 헬스장 37",
+    "address": "경기도 김포시 중심로 168",
+    "lat": 37.536201,
+    "lng": 126.978221,
+    "available": false,
+    "category": "sports"
+  },
+  {
+    "id": 21,
+    "name": "수원시 IT카페 36",
+    "address": "경기도 수원시 중심로 138",
+    "lat": 37.554827,
+    "lng": 126.848145,
+    "available": true,
+    "category": "it"
+  },
+  {
+    "id": 22,
+    "name": "파주시 펫스토어 97",
+    "address": "경기도 파주시 중심로 45",
+    "lat": 37.447933,
+    "lng": 126.788623,
+    "available": false,
+    "category": "pet"
+  },
+  {
+    "id": 23,
+    "name": "안산시 펫스토어 94",
+    "address": "경기도 안산시 중심로 63",
+    "lat": 37.112265,
+    "lng": 126.821597,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 24,
+    "name": "고양시 여행사 99",
+    "address": "경기도 고양시 중심로 51",
+    "lat": 37.400119,
+    "lng": 126.961113,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 25,
+    "name": "용인시 학원 49",
+    "address": "경기도 용인시 중심로 23",
+    "lat": 37.442271,
+    "lng": 126.739801,
+    "available": true,
+    "category": "education"
+  },
+  {
+    "id": 26,
+    "name": "고양시 맛집 72",
+    "address": "경기도 고양시 중심로 71",
+    "lat": 37.407882,
+    "lng": 126.709547,
+    "available": false,
+    "category": "food"
+  },
+  {
+    "id": 27,
+    "name": "안양시 IT카페 82",
+    "address": "경기도 안양시 중심로 186",
+    "lat": 37.282561,
+    "lng": 126.936543,
+    "available": true,
+    "category": "it"
+  },
+  {
+    "id": 28,
+    "name": "용인시 IT카페 97",
+    "address": "경기도 용인시 중심로 19",
+    "lat": 37.520943,
+    "lng": 127.177292,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 29,
+    "name": "파주시 헬스장 88",
+    "address": "경기도 파주시 중심로 36",
+    "lat": 37.109787,
+    "lng": 127.143976,
+    "available": true,
+    "category": "sports"
+  },
+  {
+    "id": 30,
+    "name": "파주시 문화센터 35",
+    "address": "경기도 파주시 중심로 134",
+    "lat": 37.295638,
+    "lng": 126.865153,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 31,
+    "name": "안양시 맛집 49",
+    "address": "경기도 안양시 중심로 164",
+    "lat": 37.4278,
+    "lng": 127.00331,
+    "available": false,
+    "category": "food"
+  },
+  {
+    "id": 32,
+    "name": "고양시 약국 26",
+    "address": "경기도 고양시 중심로 197",
+    "lat": 37.455123,
+    "lng": 126.751015,
+    "available": true,
+    "category": "health"
+  },
+  {
+    "id": 33,
+    "name": "수원시 여행사 90",
+    "address": "경기도 수원시 중심로 188",
+    "lat": 37.659392,
+    "lng": 126.998961,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 34,
+    "name": "의정부시 쇼핑몰 95",
+    "address": "경기도 의정부시 중심로 104",
+    "lat": 37.203545,
+    "lng": 127.072145,
+    "available": false,
+    "category": "shopping"
+  },
+  {
+    "id": 35,
+    "name": "파주시 쇼핑몰 80",
+    "address": "경기도 파주시 중심로 127",
+    "lat": 37.491578,
+    "lng": 126.786672,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 36,
+    "name": "김포시 패션샵 41",
+    "address": "경기도 김포시 중심로 148",
+    "lat": 37.684707,
+    "lng": 126.847605,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 37,
+    "name": "수원시 학원 6",
+    "address": "경기도 수원시 중심로 16",
+    "lat": 37.636109,
+    "lng": 127.110523,
+    "available": true,
+    "category": "education"
+  },
+  {
+    "id": 38,
+    "name": "부천시 헬스장 50",
+    "address": "경기도 부천시 중심로 84",
+    "lat": 37.185563,
+    "lng": 126.954385,
+    "available": false,
+    "category": "sports"
+  },
+  {
+    "id": 39,
+    "name": "용인시 문화센터 4",
+    "address": "경기도 용인시 중심로 129",
+    "lat": 37.413752,
+    "lng": 126.72911,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 40,
+    "name": "의정부시 학원 56",
+    "address": "경기도 의정부시 중심로 103",
+    "lat": 37.121233,
+    "lng": 126.769245,
+    "available": true,
+    "category": "education"
+  }
+  ,
+   {
+    "id": 41,
+    "name": "강릉시 헬스장 76",
+    "address": "강원도 강릉시 중심로 149",
+    "lat": 37.783208,
+    "lng": 128.479973,
+    "available": true,
+    "category": "sports"
+  },
+  {
+    "id": 42,
+    "name": "강릉시 여행사 27",
+    "address": "강원도 강릉시 중심로 58",
+    "lat": 37.799856,
+    "lng": 128.098153,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 43,
+    "name": "강릉시 펫스토어 91",
+    "address": "강원도 강릉시 중심로 20",
+    "lat": 37.587519,
+    "lng": 127.433201,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 44,
+    "name": "강릉시 펫스토어 27",
+    "address": "강원도 강릉시 중심로 42",
+    "lat": 37.578783,
+    "lng": 128.357261,
+    "available": false,
+    "category": "pet"
+  },
+  {
+    "id": 45,
+    "name": "강릉시 쇼핑몰 1",
+    "address": "강원도 강릉시 중심로 23",
+    "lat": 37.438719,
+    "lng": 127.948812,
+    "available": false,
+    "category": "shopping"
+  },
+  {
+    "id": 46,
+    "name": "춘천시 약국 20",
+    "address": "강원도 춘천시 중심로 25",
+    "lat": 37.420817,
+    "lng": 128.479855,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 47,
+    "name": "춘천시 기타존 51",
+    "address": "강원도 춘천시 중심로 106",
+    "lat": 37.740783,
+    "lng": 128.24438,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 48,
+    "name": "원주시 문화센터 37",
+    "address": "강원도 원주시 중심로 29",
+    "lat": 37.561809,
+    "lng": 127.788433,
+    "available": true,
+    "category": "culture"
+  },
+  {
+    "id": 49,
+    "name": "원주시 여행사 95",
+    "address": "강원도 원주시 중심로 90",
+    "lat": 37.766756,
+    "lng": 127.980572,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 50,
+    "name": "원주시 펫스토어 43",
+    "address": "강원도 원주시 중심로 76",
+    "lat": 37.440936,
+    "lng": 127.624864,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 51,
+    "name": "춘천시 IT카페 24",
+    "address": "강원도 춘천시 중심로 107",
+    "lat": 37.817882,
+    "lng": 128.421841,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 52,
+    "name": "춘천시 맛집 97",
+    "address": "강원도 춘천시 중심로 100",
+    "lat": 37.635919,
+    "lng": 128.218141,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 53,
+    "name": "원주시 갤러리 87",
+    "address": "강원도 원주시 중심로 167",
+    "lat": 37.593346,
+    "lng": 128.343268,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 54,
+    "name": "춘천시 약국 67",
+    "address": "강원도 춘천시 중심로 183",
+    "lat": 37.551126,
+    "lng": 127.33656,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 55,
+    "name": "원주시 갤러리 67",
+    "address": "강원도 원주시 중심로 108",
+    "lat": 37.538471,
+    "lng": 127.546927,
+    "available": true,
+    "category": "art"
+  }
+  ,
+  {
+    "id": 56,
+    "name": "제천시 여행사 27",
+    "address": "충청북도 제천시 중심로 190",
+    "lat": 36.633481,
+    "lng": 127.202568,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 57,
+    "name": "제천시 IT카페 92",
+    "address": "충청북도 제천시 중심로 174",
+    "lat": 36.932111,
+    "lng": 127.340745,
+    "available": true,
+    "category": "it"
+  },
+  {
+    "id": 58,
+    "name": "청주시 패션샵 20",
+    "address": "충청북도 청주시 중심로 122",
+    "lat": 36.27011,
+    "lng": 127.826734,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 59,
+    "name": "제천시 문화센터 1",
+    "address": "충청북도 제천시 중심로 183",
+    "lat": 36.59297,
+    "lng": 127.726045,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 60,
+    "name": "청주시 기타존 35",
+    "address": "충청북도 청주시 중심로 147",
+    "lat": 36.527283,
+    "lng": 127.835391,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 61,
+    "name": "충주시 갤러리 2",
+    "address": "충청북도 충주시 중심로 38",
+    "lat": 36.314992,
+    "lng": 127.750529,
+    "available": true,
+    "category": "art"
+  },
+  {
+    "id": 62,
+    "name": "제천시 패션샵 89",
+    "address": "충청북도 제천시 중심로 119",
+    "lat": 36.626986,
+    "lng": 127.535533,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 63,
+    "name": "청주시 갤러리 91",
+    "address": "충청북도 청주시 중심로 106",
+    "lat": 36.58314,
+    "lng": 127.470777,
+    "available": true,
+    "category": "art"
+  },
+  {
+    "id": 64,
+    "name": "청주시 IT카페 27",
+    "address": "충청북도 청주시 중심로 120",
+    "lat": 36.207324,
+    "lng": 127.590475,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 65,
+    "name": "제천시 패션샵 51",
+    "address": "충청북도 제천시 중심로 34",
+    "lat": 36.312721,
+    "lng": 127.626898,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 66,
+    "name": "제천시 기타존 44",
+    "address": "충청북도 제천시 중심로 142",
+    "lat": 36.481654,
+    "lng": 127.643897,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 67,
+    "name": "제천시 패션샵 92",
+    "address": "충청북도 제천시 중심로 177",
+    "lat": 36.338403,
+    "lng": 127.200368,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 68,
+    "name": "제천시 IT카페 40",
+    "address": "충청북도 제천시 중심로 174",
+    "lat": 37.002104,
+    "lng": 127.559731,
+    "available": true,
+    "category": "it"
+  },
+  {
+    "id": 69,
+    "name": "제천시 여행사 79",
+    "address": "충청북도 제천시 중심로 158",
+    "lat": 36.323492,
+    "lng": 127.399164,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 70,
+    "name": "충주시 펫스토어 9",
+    "address": "충청북도 충주시 중심로 151",
+    "lat": 36.290587,
+    "lng": 127.597179,
+    "available": true,
+    "category": "pet"
+  }
+  ,
+  {
+    "id": 71,
+    "name": "천안시 맛집 75",
+    "address": "충청남도 천안시 중심로 54",
+    "lat": 36.881256,
+    "lng": 127.146003,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 72,
+    "name": "서산시 갤러리 80",
+    "address": "충청남도 서산시 중심로 181",
+    "lat": 36.776823,
+    "lng": 126.668822,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 73,
+    "name": "서산시 여행사 21",
+    "address": "충청남도 서산시 중심로 31",
+    "lat": 36.66808,
+    "lng": 126.705874,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 74,
+    "name": "아산시 펫스토어 28",
+    "address": "충청남도 아산시 중심로 68",
+    "lat": 36.543645,
+    "lng": 127.038581,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 75,
+    "name": "천안시 기타존 50",
+    "address": "충청남도 천안시 중심로 128",
+    "lat": 36.590865,
+    "lng": 127.060796,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 76,
+    "name": "서산시 약국 27",
+    "address": "충청남도 서산시 중심로 26",
+    "lat": 36.365845,
+    "lng": 126.801618,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 77,
+    "name": "아산시 학원 41",
+    "address": "충청남도 아산시 중심로 159",
+    "lat": 36.502902,
+    "lng": 126.890855,
+    "available": true,
+    "category": "education"
+  },
+  {
+    "id": 78,
+    "name": "아산시 기타존 10",
+    "address": "충청남도 아산시 중심로 157",
+    "lat": 36.574915,
+    "lng": 126.639468,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 79,
+    "name": "서산시 여행사 36",
+    "address": "충청남도 서산시 중심로 194",
+    "lat": 36.336151,
+    "lng": 126.648888,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 80,
+    "name": "아산시 쇼핑몰 95",
+    "address": "충청남도 아산시 중심로 116",
+    "lat": 36.885659,
+    "lng": 127.039012,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 81,
+    "name": "서산시 갤러리 5",
+    "address": "충청남도 서산시 중심로 183",
+    "lat": 36.488494,
+    "lng": 126.96312,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 82,
+    "name": "서산시 문화센터 44",
+    "address": "충청남도 서산시 중심로 30",
+    "lat": 36.568794,
+    "lng": 126.643178,
+    "available": true,
+    "category": "culture"
+  },
+  {
+    "id": 83,
+    "name": "아산시 갤러리 70",
+    "address": "충청남도 아산시 중심로 151",
+    "lat": 36.315266,
+    "lng": 126.580416,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 84,
+    "name": "서산시 학원 19",
+    "address": "충청남도 서산시 중심로 85",
+    "lat": 36.838085,
+    "lng": 126.967172,
+    "available": false,
+    "category": "education"
+  },
+  {
+    "id": 85,
+    "name": "아산시 패션샵 90",
+    "address": "충청남도 아산시 중심로 200",
+    "lat": 36.56053,
+    "lng": 126.91512,
+    "available": false,
+    "category": "fashion"
+  }
+  ,
+  {
+    "id": 86,
+    "name": "익산시 헬스장 2",
+    "address": "전라북도 익산시 중심로 74",
+    "lat": 36.017823,
+    "lng": 126.984663,
+    "available": false,
+    "category": "sports"
+  },
+  {
+    "id": 87,
+    "name": "전주시 문화센터 17",
+    "address": "전라북도 전주시 중심로 132",
+    "lat": 35.897007,
+    "lng": 126.828813,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 88,
+    "name": "익산시 기타존 48",
+    "address": "전라북도 익산시 중심로 185",
+    "lat": 35.851301,
+    "lng": 126.854072,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 89,
+    "name": "익산시 펫스토어 22",
+    "address": "전라북도 익산시 중심로 49",
+    "lat": 35.957591,
+    "lng": 126.811261,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 90,
+    "name": "군산시 갤러리 91",
+    "address": "전라북도 군산시 중심로 165",
+    "lat": 35.892044,
+    "lng": 127.175677,
+    "available": true,
+    "category": "art"
+  },
+  {
+    "id": 91,
+    "name": "전주시 갤러리 85",
+    "address": "전라북도 전주시 중심로 128",
+    "lat": 36.076718,
+    "lng": 126.738546,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 92,
+    "name": "군산시 맛집 45",
+    "address": "전라북도 군산시 중심로 40",
+    "lat": 35.928538,
+    "lng": 127.107731,
+    "available": false,
+    "category": "food"
+  },
+  {
+    "id": 93,
+    "name": "군산시 문화센터 44",
+    "address": "전라북도 군산시 중심로 189",
+    "lat": 35.80082,
+    "lng": 127.005963,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 94,
+    "name": "전주시 기타존 9",
+    "address": "전라북도 전주시 중심로 67",
+    "lat": 35.855767,
+    "lng": 126.824721,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 95,
+    "name": "군산시 헬스장 62",
+    "address": "전라북도 군산시 중심로 160",
+    "lat": 36.09554,
+    "lng": 127.060018,
+    "available": false,
+    "category": "sports"
+  },
+  {
+    "id": 96,
+    "name": "전주시 IT카페 99",
+    "address": "전라북도 전주시 중심로 196",
+    "lat": 35.999012,
+    "lng": 127.018128,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 97,
+    "name": "군산시 기타존 22",
+    "address": "전라북도 군산시 중심로 184",
+    "lat": 35.903654,
+    "lng": 126.967968,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 98,
+    "name": "익산시 IT카페 21",
+    "address": "전라북도 익산시 중심로 84",
+    "lat": 35.940771,
+    "lng": 126.976004,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 99,
+    "name": "익산시 기타존 63",
+    "address": "전라북도 익산시 중심로 186",
+    "lat": 35.965873,
+    "lng": 126.900143,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 100,
+    "name": "익산시 문화센터 97",
+    "address": "전라북도 익산시 중심로 53",
+    "lat": 35.923387,
+    "lng": 126.8797,
+    "available": false,
+    "category": "culture"
+  }
+  ,
+  {
+    "id": 101,
+    "name": "목포시 패션샵 2",
+    "address": "전라남도 목포시 중심로 126",
+    "lat": 35.093793,
+    "lng": 126.810955,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 102,
+    "name": "여수시 학원 76",
+    "address": "전라남도 여수시 중심로 192",
+    "lat": 34.816856,
+    "lng": 126.492989,
+    "available": true,
+    "category": "education"
+  },
+  {
+    "id": 103,
+    "name": "순천시 헬스장 97",
+    "address": "전라남도 순천시 중심로 128",
+    "lat": 34.739809,
+    "lng": 126.598212,
+    "available": true,
+    "category": "sports"
+  },
+  {
+    "id": 104,
+    "name": "목포시 쇼핑몰 16",
+    "address": "전라남도 목포시 중심로 10",
+    "lat": 34.886149,
+    "lng": 126.647202,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 105,
+    "name": "목포시 IT카페 96",
+    "address": "전라남도 목포시 중심로 174",
+    "lat": 34.920719,
+    "lng": 126.391819,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 106,
+    "name": "순천시 여행사 62",
+    "address": "전라남도 순천시 중심로 156",
+    "lat": 34.973692,
+    "lng": 126.607498,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 107,
+    "name": "여수시 쇼핑몰 1",
+    "address": "전라남도 여수시 중심로 160",
+    "lat": 34.743723,
+    "lng": 127.045988,
+    "available": true,
+    "category": "shopping"
+  },
+  {
+    "id": 108,
+    "name": "여수시 패션샵 98",
+    "address": "전라남도 여수시 중심로 39",
+    "lat": 35.084183,
+    "lng": 126.354876,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 109,
+    "name": "여수시 IT카페 1",
+    "address": "전라남도 여수시 중심로 113",
+    "lat": 34.912568,
+    "lng": 126.737449,
+    "available": false,
+    "category": "it"
+  },
+  {
+    "id": 110,
+    "name": "순천시 펫스토어 31",
+    "address": "전라남도 순천시 중심로 15",
+    "lat": 35.091752,
+    "lng": 126.340872,
+    "available": false,
+    "category": "pet"
+  },
+  {
+    "id": 111,
+    "name": "목포시 문화센터 21",
+    "address": "전라남도 목포시 중심로 142",
+    "lat": 34.783025,
+    "lng": 127.075868,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 112,
+    "name": "목포시 갤러리 88",
+    "address": "전라남도 목포시 중심로 102",
+    "lat": 34.866024,
+    "lng": 126.51613,
+    "available": true,
+    "category": "art"
+  },
+  {
+    "id": 113,
+    "name": "순천시 갤러리 76",
+    "address": "전라남도 순천시 중심로 165",
+    "lat": 35.014151,
+    "lng": 126.891795,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 114,
+    "name": "순천시 패션샵 56",
+    "address": "전라남도 순천시 중심로 197",
+    "lat": 35.03727,
+    "lng": 126.622253,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 115,
+    "name": "순천시 갤러리 70",
+    "address": "전라남도 순천시 중심로 84",
+    "lat": 34.814587,
+    "lng": 126.968876,
+    "available": false,
+    "category": "art"
+  }
+  ,
+  {
+    "id": 116,
+    "name": "경주시 패션샵 25",
+    "address": "경상북도 경주시 중심로 162",
+    "lat": 35.809686,
+    "lng": 128.329455,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 117,
+    "name": "구미시 패션샵 98",
+    "address": "경상북도 구미시 중심로 169",
+    "lat": 36.09855,
+    "lng": 129.225887,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 118,
+    "name": "구미시 펫스토어 3",
+    "address": "경상북도 구미시 중심로 42",
+    "lat": 36.137945,
+    "lng": 129.056394,
+    "available": false,
+    "category": "pet"
+  },
+  {
+    "id": 119,
+    "name": "포항시 문화센터 90",
+    "address": "경상북도 포항시 중심로 199",
+    "lat": 36.288894,
+    "lng": 129.278226,
+    "available": true,
+    "category": "culture"
+  },
+  {
+    "id": 120,
+    "name": "포항시 맛집 5",
+    "address": "경상북도 포항시 중심로 187",
+    "lat": 35.857199,
+    "lng": 128.421901,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 121,
+    "name": "포항시 약국 58",
+    "address": "경상북도 포항시 중심로 120",
+    "lat": 35.836749,
+    "lng": 128.985998,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 122,
+    "name": "구미시 여행사 65",
+    "address": "경상북도 구미시 중심로 38",
+    "lat": 35.965074,
+    "lng": 129.335496,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 123,
+    "name": "구미시 기타존 30",
+    "address": "경상북도 구미시 중심로 112",
+    "lat": 36.214532,
+    "lng": 129.208399,
+    "available": false,
+    "category": "etc"
+  },
+  {
+    "id": 124,
+    "name": "경주시 패션샵 92",
+    "address": "경상북도 경주시 중심로 190",
+    "lat": 35.971059,
+    "lng": 129.393747,
+    "available": true,
+    "category": "fashion"
+  },
+  {
+    "id": 125,
+    "name": "구미시 학원 29",
+    "address": "경상북도 구미시 중심로 102",
+    "lat": 36.103416,
+    "lng": 128.608175,
+    "available": false,
+    "category": "education"
+  },
+  {
+    "id": 126,
+    "name": "경주시 패션샵 49",
+    "address": "경상북도 경주시 중심로 82",
+    "lat": 35.92173,
+    "lng": 128.686277,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 127,
+    "name": "구미시 펫스토어 43",
+    "address": "경상북도 구미시 중심로 166",
+    "lat": 36.222735,
+    "lng": 128.556617,
+    "available": true,
+    "category": "pet"
+  },
+  {
+    "id": 128,
+    "name": "포항시 문화센터 37",
+    "address": "경상북도 포항시 중심로 5",
+    "lat": 35.928628,
+    "lng": 129.300811,
+    "available": true,
+    "category": "culture"
+  },
+  {
+    "id": 129,
+    "name": "구미시 여행사 67",
+    "address": "경상북도 구미시 중심로 130",
+    "lat": 36.173048,
+    "lng": 129.085588,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 130,
+    "name": "경주시 갤러리 48",
+    "address": "경상북도 경주시 중심로 11",
+    "lat": 35.92767,
+    "lng": 129.041169,
+    "available": true,
+    "category": "art"
+  }
+  ,
+  {
+    "id": 131,
+    "name": "창원시 약국 30",
+    "address": "경상남도 창원시 중심로 95",
+    "lat": 35.391412,
+    "lng": 128.277078,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 132,
+    "name": "진주시 여행사 19",
+    "address": "경상남도 진주시 중심로 47",
+    "lat": 35.077459,
+    "lng": 128.200737,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 133,
+    "name": "진주시 여행사 85",
+    "address": "경상남도 진주시 중심로 3",
+    "lat": 35.377549,
+    "lng": 128.852683,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 134,
+    "name": "김해시 기타존 85",
+    "address": "경상남도 김해시 중심로 36",
+    "lat": 35.058102,
+    "lng": 127.631294,
+    "available": true,
+    "category": "etc"
+  },
+  {
+    "id": 135,
+    "name": "진주시 약국 64",
+    "address": "경상남도 진주시 중심로 7",
+    "lat": 35.328869,
+    "lng": 127.692428,
+    "available": false,
+    "category": "health"
+  },
+  {
+    "id": 136,
+    "name": "창원시 여행사 85",
+    "address": "경상남도 창원시 중심로 190",
+    "lat": 35.24523,
+    "lng": 128.549755,
+    "available": true,
+    "category": "travel"
+  },
+  {
+    "id": 137,
+    "name": "김해시 여행사 27",
+    "address": "경상남도 김해시 중심로 145",
+    "lat": 35.25295,
+    "lng": 128.855244,
+    "available": false,
+    "category": "travel"
+  },
+  {
+    "id": 138,
+    "name": "진주시 학원 16",
+    "address": "경상남도 진주시 중심로 99",
+    "lat": 35.060373,
+    "lng": 128.37119,
+    "available": false,
+    "category": "education"
+  },
+  {
+    "id": 139,
+    "name": "김해시 패션샵 87",
+    "address": "경상남도 김해시 중심로 116",
+    "lat": 35.177798,
+    "lng": 128.78068,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 140,
+    "name": "김해시 갤러리 62",
+    "address": "경상남도 김해시 중심로 114",
+    "lat": 35.09379,
+    "lng": 128.481498,
+    "available": false,
+    "category": "art"
+  },
+  {
+    "id": 141,
+    "name": "김해시 맛집 12",
+    "address": "경상남도 김해시 중심로 56",
+    "lat": 35.361927,
+    "lng": 128.621078,
+    "available": true,
+    "category": "food"
+  },
+  {
+    "id": 142,
+    "name": "진주시 패션샵 79",
+    "address": "경상남도 진주시 중심로 100",
+    "lat": 35.097379,
+    "lng": 128.260452,
+    "available": false,
+    "category": "fashion"
+  },
+  {
+    "id": 143,
+    "name": "김해시 문화센터 71",
+    "address": "경상남도 김해시 중심로 67",
+    "lat": 35.053814,
+    "lng": 128.254607,
+    "available": false,
+    "category": "culture"
+  },
+  {
+    "id": 144,
+    "name": "창원시 문화센터 56",
+    "address": "경상남도 창원시 중심로 24",
+    "lat": 35.060179,
+    "lng": 128.575394,
+    "available": true,
+    "category": "culture"
+  },
+  {
+    "id": 145,
+    "name": "김해시 헬스장 57",
+    "address": "경상남도 김해시 중심로 160",
+    "lat": 35.303446,
+    "lng": 128.322747,
+    "available": false,
+    "category": "sports"
+  }
+]
