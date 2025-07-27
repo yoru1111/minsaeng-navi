@@ -321,21 +321,21 @@ function Tab2MapPage() {
         console.error("매장 데이터 로드 실패:", error);
         // 폴백: 로컬 JSON 파일 사용
         fetch("/stores.json")
-          .then((res) => res.json())
-          .then((data) => setStores(data))
-          .catch(console.error);
+      .then((res) => res.json())
+      .then((data) => setStores(data))
+      .catch(console.error);
       });
   }, []);
 
   // 필터링된 매장 (useMemo로 최적화)
   const filteredStores = useMemo(() => {
     return stores.filter((store) => {
-      const { area, si, categories } = location.state || {};
-      const inRegion = store.address?.includes(area) && store.address?.includes(si);
-      const inCategory = categories?.includes(store.category);
-      const nameMatch = store.name.toLowerCase().includes(searchTerm.toLowerCase());
-      return inRegion && inCategory && nameMatch;
-    });
+    const { area, si, categories } = location.state || {};
+    const inRegion = store.address?.includes(area) && store.address?.includes(si);
+    const inCategory = categories?.includes(store.category);
+    const nameMatch = store.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return inRegion && inCategory && nameMatch;
+  });
   }, [stores, location.state, searchTerm]);
 
   // 필터링된 매장이 생겼을 때 → 첫 번째 매장 중심으로 지도 이동
@@ -389,7 +389,7 @@ function Tab2MapPage() {
           </div>
         </div>
 
-                 {/* 지도 */}
+        {/* 지도 */}
          <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
            <div className="w-full h-full">
              <NaverMap
@@ -397,9 +397,9 @@ function Tab2MapPage() {
                center={center}
                selected={selectedStore}
                onMapLoad={setMapInstance}
-             />
-           </div>
-         </div>
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
