@@ -63,16 +63,25 @@ router.get('/', async (req, res) => {
     
     const stores = await storesQuery.limit(100);
 
-    // 각 매장에 사용 가능 여부와 좌표 정보 추가
-    const storesWithAvailability = stores.map(store => {
-      const isAvailable = store.usable_with_fund || store.accepts_paper || store.accepts_mobile;
-      return {
-        ...store.toObject(),
-        available: isAvailable,
-        lat: store.location.coordinates[1], // 위도
-        lng: store.location.coordinates[0]  // 경도
-      };
-    });
+            // 각 매장에 사용 가능 여부와 좌표 정보 추가
+        const storesWithAvailability = stores.map(store => {
+          // 기존 필드와 새 필드 모두 확인
+          const usableFund = store.usable_with_fund || store.supports_rechargeable_card || false;
+          const acceptsPaper = store.accepts_paper || store.supports_paper_voucher || false;
+          const acceptsMobile = store.accepts_mobile || store.supports_mobile_payment || false;
+          
+          const isAvailable = usableFund || acceptsPaper || acceptsMobile;
+          
+          return {
+            ...store.toObject(),
+            available: isAvailable,
+            usable_with_fund: usableFund,
+            accepts_paper: acceptsPaper,
+            accepts_mobile: acceptsMobile,
+            lat: store.location && store.location.coordinates ? store.location.coordinates[1] : 0,
+            lng: store.location && store.location.coordinates ? store.location.coordinates[0] : 0
+          };
+        });
 
     res.json(storesWithAvailability);
   } catch (err) {
