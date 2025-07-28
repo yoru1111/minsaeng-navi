@@ -312,31 +312,60 @@ function Tab2MapPage() {
     }
   }, [location.state, moveToRegion]);
 
-  // 매장 데이터 로드 (MongoDB에서 가져오기)
+  // 매장 데이터 로드 (백엔드에서 필터링하여 가져오기)
   useEffect(() => {
-    fetch("http://localhost:5000/stores")
-      .then((res) => res.json())
-      .then((data) => setStores(data))
+    console.log("매장 데이터 로딩 시작...");
+    
+    // URL 파라미터 구성
+    const params = new URLSearchParams();
+    if (location.state?.area) {
+      params.append('area', location.state.area);
+    }
+    if (location.state?.si) {
+      params.append('si', location.state.si);
+    }
+    if (location.state?.categories?.length > 0) {
+      // 첫 번째 카테고리만 사용 (다중 카테고리는 프론트에서 처리)
+      params.append('category', location.state.categories[0]);
+    }
+    params.append('usable', 'true'); // 사용 가능한 매장만
+    
+    const url = `http://localhost:5000/stores${params.toString() ? `?${params.toString()}` : ''}`;
+    console.log("API 요청 URL:", url);
+    
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(`매장 데이터 로드 성공: ${data.length}개`);
+        setStores(data);
+      })
       .catch((error) => {
         console.error("매장 데이터 로드 실패:", error);
-        // 폴백: 로컬 JSON 파일 사용
-        fetch("/stores.json")
-      .then((res) => res.json())
-      .then((data) => setStores(data))
-      .catch(console.error);
+        alert("서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.");
+        setStores([]); // 빈 배열로 설정
       });
-  }, []);
+  }, [location.state]);
 
-  // 필터링된 매장 (useMemo로 최적화)
+  // 필터링된 매장 (간소화 - 백엔드에서 대부분 처리됨)
   const filteredStores = useMemo(() => {
-    return stores.filter((store) => {
-    const { area, si, categories } = location.state || {};
-    const inRegion = store.address?.includes(area) && store.address?.includes(si);
-    const inCategory = categories?.includes(store.category);
-    const nameMatch = store.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return inRegion && inCategory && nameMatch;
-  });
-  }, [stores, location.state, searchTerm]);
+    if (stores.length === 0) {
+      return [];
+    }
+    
+    // 검색어 필터링만 프론트엔드에서 처리 (백엔드에서 이미 지역/카테고리 필터링됨)
+    if (!searchTerm) {
+      return stores;
+    }
+    
+    return stores.filter((store) => 
+      store.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [stores, searchTerm]);
 
   // 필터링된 매장이 생겼을 때 → 첫 번째 매장 중심으로 지도 이동
   useEffect(() => {
@@ -350,55 +379,108 @@ function Tab2MapPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-      <div className="flex flex-1">
+      <Header currentState={location.state} />
+      <div className="flex flex-1" style={{ height: "calc(100vh - 64px)" }}>
         {/* 왼쪽 사이드바 */}
-        <div className="w-[300px] bg-white shadow px-4 py-6 overflow-y-auto">
+        <div className="w-[350px] bg-white shadow-lg z-20 flex flex-col h-full">
+          {/* 사이드바 헤더 */}
+          <div className="p-4 border-b bg-gray-50 flex-shrink-0">
+            <h3 className="font-semibold text-lg text-gray-800">매장 목록</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {filteredStores.length > 0 ? `${filteredStores.length}개 매장` : '매장을 로딩 중...'}
+            </p>
+            <div className="mt-3">
           <DirectionsBox onSearch={setSearchTerm} stores={stores} />
-          <div className="mt-6 space-y-4">
+            </div>
+          </div>
+          
+          {/* 스크롤 가능한 매장 목록 */}
+          <div className="flex-1 overflow-y-auto">
             {filteredStores.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center">
-                해당 조건에 맞는 매장이 없습니다.
-              </p>
+              <div className="p-8 text-center text-gray-500">
+                <div className="text-4xl mb-4">🏪</div>
+                <p>해당 조건에 맞는 매장이 없습니다.</p>
+              </div>
             ) : (
-              filteredStores.map((store) => (
-                <div
-                  key={store.id}
-                  onClick={() => setSelectedStore(store)}
-                  className="border p-3 rounded shadow-sm cursor-pointer hover:bg-blue-50"
-                >
-                  <h2 className="font-bold">{store.name}</h2>
-                  <p className="text-sm text-gray-600">{store.address}</p>
-                  <button
+              filteredStores.map((store, index) => {
+                const isAvailable = store.available || store.usable_with_fund || store.accepts_paper || store.accepts_mobile;
+                const paymentMethods = [];
+                if (store.usable_with_fund) paymentMethods.push("충전식 카드");
+                if (store.accepts_paper) paymentMethods.push("지류");
+                if (store.accepts_mobile) paymentMethods.push("모바일");
+                
+                return (
+                  <div 
+                    key={store._id || index}
+                    className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                     onClick={() => {
-                      // 내장 네이버 지도 API 길찾기 기능 사용
-                      if (window.showDirections) {
-                        window.showDirections(store.lat, store.lng);
-                      } else {
-                        // 지도가 아직 로드되지 않은 경우 안내 메시지
-                        alert("지도가 로드 중입니다. 잠시 후 다시 시도해주세요.");
+                      setSelectedStore(store);
+                      if (mapInstance && store.lat && store.lng) {
+                        mapInstance.setCenter(new window.naver.maps.LatLng(store.lat, store.lng));
+                        mapInstance.setZoom(16);
                       }
                     }}
-                    className="mt-2 inline-block px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
                   >
-                    🚗 길찾기
-                  </button>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-gray-900 truncate">
+                          {store.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                          {store.address}
+                        </p>
+                        <div className="mt-2 flex items-center gap-2 flex-wrap">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            isAvailable 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {isAvailable ? '✅ 사용가능' : '❌ 사용불가'}
+                          </span>
+                          {store.category && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                              {store.category}
+                            </span>
+                          )}
+                        </div>
+                        {paymentMethods.length > 0 && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            💳 {paymentMethods.join(", ")}
+                          </p>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // 부모 onClick 이벤트 방지
+                            if (window.showDirections) {
+                              window.showDirections(store.lat, store.lng);
+                            } else {
+                              alert("지도가 로드 중입니다. 잠시 후 다시 시도해주세요.");
+                            }
+                          }}
+                          className="mt-2 inline-flex items-center px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                        >
+                          🚗 길찾기
+                        </button>
+                      </div>
+                      <div className={`w-3 h-3 rounded-full ml-3 mt-1 flex-shrink-0 ${
+                        isAvailable ? 'bg-green-500' : 'bg-gray-400'
+                      }`}></div>
+                    </div>
                 </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
 
-        {/* 지도 */}
-         <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
-           <div className="w-full h-full">
-             <NaverMap
-               stores={filteredStores}
-               center={center}
-               selected={selectedStore}
-               onMapLoad={setMapInstance}
+        {/* 지도 영역 */}
+        <div className="flex-1 relative bg-gray-100">
+            <NaverMap
+            stores={filteredStores.length > 0 ? filteredStores : stores}
+              center={center}
+              selected={selectedStore}
+            onMapLoad={setMapInstance}
             />
-          </div>
         </div>
       </div>
     </div>
