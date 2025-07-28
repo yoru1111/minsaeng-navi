@@ -39,4 +39,8 @@ function DirectionsBox({ onSearch, stores }) {
   );
 }
 
+<<<<<<< HEAD
 export default DirectionsBox;
+=======
+export default DirectionsBox;
+>>>>>>> sub3

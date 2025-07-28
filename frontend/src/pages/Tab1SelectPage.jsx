@@ -76,4 +76,8 @@ function Tab1SelectPage() {
   );
 }
 
+<<<<<<< HEAD
 export default Tab1SelectPage;
+=======
+export default Tab1SelectPage;
+>>>>>>> sub3

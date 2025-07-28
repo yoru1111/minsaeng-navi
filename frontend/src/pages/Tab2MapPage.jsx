@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
@@ -5,6 +6,13 @@ import DirectionsBox from "../components/DirectionsBox";
 import MapControls from "../components/MapControls";
 import NaverMap from "../components/NaverMap";
 import SearchBox from "../components/SearchBox"; // 추가
+=======
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import Header from "../components/Header";
+import DirectionsBox from "../components/DirectionsBox";
+import NaverMap from "../components/NaverMap";
+>>>>>>> sub3
 
 function Tab2MapPage() {
   const location = useLocation();
@@ -13,6 +21,17 @@ function Tab2MapPage() {
   const [selectedStore, setSelectedStore] = useState(null);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.9780 }); // 서울
   const [mapInstance, setMapInstance] = useState(null);
+<<<<<<< HEAD
+=======
+  const loadedStoreKeys = useRef(new Set()); // 중복 방지를 위한 key 저장용
+  const [debouncedCenter, setDebouncedCenter] = useState(null);
+  const [zoom, setZoom] = useState(15);
+  const debounceTimeout = useRef(null);
+  const debounceTimer = useRef(null);
+
+  // 마커 표시 여부 상태
+  const [canRenderMarkers, setCanRenderMarkers] = useState(false);
+>>>>>>> sub3
 
   // 도별 중심 좌표
   const regionCenterMap = useMemo(() => ({
@@ -314,6 +333,7 @@ function Tab2MapPage() {
     }
   }, [location.state, moveToRegion]);
 
+<<<<<<< HEAD
   // 매장 데이터 로드 (MongoDB에서 가져오기)
   useEffect(() => {
     fetch("http://localhost:5000/stores")
@@ -349,6 +369,136 @@ function Tab2MapPage() {
       setCenter({ lat: first.lat, lng: first.lng });
     }
   }, [filteredStores, selectedStore]);
+=======
+  /// 디바운스 타이머 (지도 중심 고정 2초 후)
+  useEffect(() => {
+    if (!center || zoom < 17) {
+      setCanRenderMarkers(false);
+      return;
+    }
+
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
+    debounceTimeout.current = setTimeout(() => {
+      setCanRenderMarkers(true);
+    }, 2000); // 2초 대기 후 true
+
+    return () => clearTimeout(debounceTimeout.current);
+  }, [center, zoom]);
+
+  // 지도 중심 추적 (with debounce)
+  useEffect(() => {
+    if (!mapInstance) return;
+
+    const listener = window.naver.maps.Event.addListener(
+      mapInstance,
+      "center_changed",
+      () => {
+        const c = mapInstance.getCenter();
+        const rounded = {
+          lat: Math.round(c.lat() * 10000) / 10000,
+          lng: Math.round(c.lng() * 10000) / 10000,
+        };
+        setCenter(rounded);
+
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(() => {
+          setDebouncedCenter(rounded);
+        }, 2000);
+      }
+    );
+
+    return () => {
+      window.naver.maps.Event.removeListener(listener);
+      clearTimeout(debounceTimer.current);
+    };
+  }, [mapInstance]);
+
+  // 줌 추적
+  useEffect(() => {
+    if (!mapInstance) return;
+    const zoomListener = window.naver.maps.Event.addListener(
+      mapInstance,
+      "zoom_changed",
+      () => {
+        setZoom(mapInstance.getZoom());
+      }
+    );
+    return () => window.naver.maps.Event.removeListener(zoomListener);
+  }, [mapInstance]);
+
+  // 서버 요청 (지도 중심이 멈춘 후 && 확대된 상태)
+  useEffect(() => {
+    if (!debouncedCenter || zoom < 17) return;
+
+    const apiUrl = `http://localhost:5000/stores?lat=${debouncedCenter.lat}&lng=${debouncedCenter.lng}&radius=3000`;
+    console.log("🌐 매장 데이터 요청 URL:", apiUrl);
+
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        const newStores = data.filter((store) => {
+          const key = `${store.lat},${store.lng}`;
+          if (loadedStoreKeys.current.has(key)) return false;
+          loadedStoreKeys.current.add(key);
+          return true;
+        });
+
+        if (newStores.length > 0) {
+          setStores((prev) => [...prev, ...newStores]);
+        }
+
+        console.log(`🆕 추가된 매장 개수: ${newStores.length}`);
+      })
+      .catch((err) => console.error("❌ 매장 데이터 로드 실패:", err));
+  }, [debouncedCenter, zoom]);
+
+  const filteredStores = useMemo(() => {
+    if (
+      !window?.naver?.maps?.geometry?.spherical ||
+      !mapInstance ||
+      !stores.length ||
+      zoom < 15
+    ) {
+      console.log("🚫 거리 계산 불가 또는 조건 미달:", zoom);
+      return [];
+    }
+
+    const center = mapInstance.getCenter();
+
+    console.log("🔍 줌레벨:", zoom);
+    console.log("🎯 지도 중심:", {
+      lat: center.lat(),
+      lng: center.lng()
+    });
+
+    const visible = stores.filter(({ lat, lng }, i) => {
+      const distance = window.naver.maps.geometry.spherical.computeDistanceBetween(
+        new window.naver.maps.LatLng(lat, lng),
+        center
+      );
+
+      console.log(`[${i}] (${lat}, ${lng}) ➡️ ${Math.round(distance)}m`);
+      return distance < 500;
+    });
+
+    console.log("🧾 전체 매장 수:", stores.length);
+    console.log("📌 반경 500m 매장 수:", visible.length);
+    return visible;
+  }, [stores, mapInstance, zoom]);
+
+
+
+  // // 필터링된 매장이 생겼을 때 → 첫 번째 매장 중심으로 지도 이동
+  // useEffect(() => {
+  //   if (selectedStore) {
+  //     setCenter({ lat: selectedStore.lat, lng: selectedStore.lng });
+  //   } else if (filteredStores.length > 0) {
+  //     const first = filteredStores[0];
+  //     setCenter({ lat: first.lat, lng: first.lng });
+  //   }
+  // }, [filteredStores, selectedStore]);
+>>>>>>> sub3
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -356,10 +506,13 @@ function Tab2MapPage() {
       <div className="flex flex-1">
         {/* 왼쪽 사이드바 */}
         <div className="w-[300px] bg-white shadow px-4 py-6 overflow-y-auto">
+<<<<<<< HEAD
           <SearchBox onSearch={(coords) => {
   setCenter(coords);
   mapInstance?.panTo(new window.naver.maps.LatLng(coords.lat, coords.lng));
 }} />
+=======
+>>>>>>> sub3
           <DirectionsBox onSearch={setSearchTerm} stores={stores} />
           <div className="mt-6 space-y-4">
             {filteredStores.length === 0 ? (
@@ -395,6 +548,7 @@ function Tab2MapPage() {
           </div>
         </div>
 
+<<<<<<< HEAD
                  {/* 지도 */}
          <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
            <div className="absolute top-4 right-4 z-10">
@@ -409,9 +563,27 @@ function Tab2MapPage() {
              />
            </div>
          </div>
+=======
+        {/* 지도 */}
+         <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
+           <div className="w-full h-full">
+             <NaverMap
+                stores={canRenderMarkers ? filteredStores : []}
+                center={center}
+                selected={selectedStore}
+                onMapLoad={setMapInstance}
+                onMapCenterChange={setCenter}
+            />
+          </div>
+        </div>
+>>>>>>> sub3
       </div>
     </div>
   );
 }
 
+<<<<<<< HEAD
 export default Tab2MapPage;
+=======
+export default Tab2MapPage;
+>>>>>>> sub3

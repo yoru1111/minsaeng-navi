@@ -1,6 +1,19 @@
 {
+<<<<<<< HEAD
   "dependencies": {
     "@types/navermaps": "^3.9.1",
     "mongoose": "^8.16.4"
+=======
+  "name": "minsaeng-navi",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && node server.js",
+    "client": "cd frontend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+>>>>>>> sub3
   }
 }
