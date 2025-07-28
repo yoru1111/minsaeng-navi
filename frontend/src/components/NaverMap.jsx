@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
-function NaverMap({ stores, center, selected, onMapLoad, onMapCenterChange }) {
+function NaverMap({ stores, center, selected, onMapLoad, onMapCenterChange, onGeometryReady }) {
   const mapRef = useRef(null);
   const [directions, setDirections] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
@@ -301,12 +301,14 @@ const createMarkers = useCallback(() => {
 
   // 지도 중심이 props.center로 바뀔 때 → 강제로 이동 (드래그에 의해 변경된 경우는 무시)
   useEffect(() => {
-    if (!map || !center || !shouldUpdateByUser.current) return;
-
-    map.setCenter(new window.naver.maps.LatLng(center.lat, center.lng));
-    shouldUpdateByUser.current = false;
-  }, [center, map]);
-  
+    if (map && selected) {
+      const target = markersRef.current.find(m => m.store.id === selected.id);
+      if (target) {
+        map.setCenter(target.marker.getPosition());
+        map.setZoom(16);
+      }
+    }
+  }, [selected, map]);
   // 네이버 지도 초기화
   useEffect(() => {
     // 인증 실패 처리 함수 등록
@@ -319,7 +321,7 @@ const createMarkers = useCallback(() => {
     // Client ID 설정
     const clientId = process.env.REACT_APP_NAVER_CLIENT_ID || "7b1jwmp7eq";
     
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}&submodules=directions`;
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}`;
 
     script.async = true;
     script.onload = () => {
@@ -344,6 +346,7 @@ const createMarkers = useCallback(() => {
           position: window.naver.maps.Position.TOP_LEFT
         }
       });
+      
 
       mapRef.current = naverMap;
       setMap(naverMap);
@@ -351,6 +354,21 @@ const createMarkers = useCallback(() => {
       if (onMapLoad) {
         onMapLoad(naverMap);
       }
+      // geometry 모듈 준비 체크 (200ms 간격으로 최대 5초까지)
+      let checks = 0;
+      const geomChecker = setInterval(() => {
+        checks += 1;
+        if (window.naver.maps.geometry?.spherical) {
+          clearInterval(geomChecker);
+          if (typeof onGeometryReady === "function") {
+            onGeometryReady();
+          }
+        } else if (checks > 25) {
+          // 25 * 200ms = 5초 경과 시 중단
+          clearInterval(geomChecker);
+          console.warn("geometry 모듈 로딩 타임아웃");
+        }
+      }, 200);
 
       // 전역 함수 등록
       window.showDirections = (lat, lng) => {

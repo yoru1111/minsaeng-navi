@@ -4,7 +4,20 @@ import Header from "../components/Header";
 import DirectionsBox from "../components/DirectionsBox";
 import NaverMap from "../components/NaverMap";
 
+function haversineDistance(lat1, lng1, lat2, lng2) {
+  const toRad = v => (v * Math.PI) / 180;
+  const R = 6371000;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 function Tab2MapPage() {
+  const [geometryReady, setGeometryReady] = useState(false);
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [stores, setStores] = useState([]);
@@ -19,6 +32,14 @@ function Tab2MapPage() {
 
   // 마커 표시 여부 상태
   const [canRenderMarkers, setCanRenderMarkers] = useState(false);
+
+  const handleMapLoad = useCallback((map) => {
+    setMapInstance(map);
+    // geometry 모듈 준비 여부 체크
+    if (window.naver?.maps?.geometry?.spherical) {
+      setGeometryReady(true);
+    }
+  }, []);
 
   // 도별 중심 좌표
   const regionCenterMap = useMemo(() => ({
@@ -320,26 +341,9 @@ function Tab2MapPage() {
     }
   }, [location.state, moveToRegion]);
 
-  /// 디바운스 타이머 (지도 중심 고정 2초 후)
-  useEffect(() => {
-    if (!center || zoom < 17) {
-      setCanRenderMarkers(false);
-      return;
-    }
-
-    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-
-    debounceTimeout.current = setTimeout(() => {
-      setCanRenderMarkers(true);
-    }, 2000); // 2초 대기 후 true
-
-    return () => clearTimeout(debounceTimeout.current);
-  }, [center, zoom]);
-
-  // 지도 중심 추적 (with debounce)
+  // 지도 중심 변경 추적 (디바운스)
   useEffect(() => {
     if (!mapInstance) return;
-
     const listener = window.naver.maps.Event.addListener(
       mapInstance,
       "center_changed",
@@ -349,10 +353,12 @@ function Tab2MapPage() {
           lat: Math.round(c.lat() * 10000) / 10000,
           lng: Math.round(c.lng() * 10000) / 10000,
         };
+        console.log("📍 center_changed → new center:", rounded);
         setCenter(rounded);
 
-        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        clearTimeout(debounceTimer.current);
         debounceTimer.current = setTimeout(() => {
+          console.log("⏱️ Debounce expired → debouncedCenter =", rounded);
           setDebouncedCenter(rounded);
         }, 2000);
       }
@@ -364,96 +370,91 @@ function Tab2MapPage() {
     };
   }, [mapInstance]);
 
-  // 줌 추적
+  // 줌 레벨 변경 추적
   useEffect(() => {
     if (!mapInstance) return;
     const zoomListener = window.naver.maps.Event.addListener(
       mapInstance,
       "zoom_changed",
       () => {
-        setZoom(mapInstance.getZoom());
+        const z = mapInstance.getZoom();
+        console.log("🔍 zoom_changed → zoom =", z);
+        setZoom(z);
       }
     );
     return () => window.naver.maps.Event.removeListener(zoomListener);
   }, [mapInstance]);
 
-  // 서버 요청 (지도 중심이 멈춘 후 && 확대된 상태)
+  // 1) debouncedCenter 변경 시 기존 데이터 초기화
   useEffect(() => {
-    if (!debouncedCenter || zoom < 17) return;
+    if (!debouncedCenter) return;
 
-    const apiUrl = `http://localhost:5000/stores?lat=${debouncedCenter.lat}&lng=${debouncedCenter.lng}&radius=3000`;
+    console.log("🔄 새로운 중심 감지 → stores 및 loadedStoreKeys 초기화");
+    loadedStoreKeys.current.clear();
+    setStores([]);
+  }, [debouncedCenter]);
+
+  // 2) 매장 데이터 요청 (debouncedCenter && zoom >= 16)
+  useEffect(() => {
+    console.log("➡️ 요청 조건:", { debouncedCenter, zoom });
+    if (!debouncedCenter || zoom < 15) {
+      console.log("❌ 요청 스킵 (조건 미달)");
+      return;
+    }
+
+    const { lat, lng } = debouncedCenter;
+    const apiUrl = `http://localhost:5000/stores?lat=${lat}&lng=${lng}&radius=3000`;
     console.log("🌐 매장 데이터 요청 URL:", apiUrl);
 
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
+        console.log("📥 서버 응답 매장 개수:", data.length);
         const newStores = data.filter((store) => {
           const key = `${store.lat},${store.lng}`;
           if (loadedStoreKeys.current.has(key)) return false;
           loadedStoreKeys.current.add(key);
           return true;
         });
+        console.log("🆕 필터 후 새로 추가된 매장 개수:", newStores.length);
 
         if (newStores.length > 0) {
-          setStores((prev) => [...prev, ...newStores]);
+          setStores((prev) => {
+            console.log("🔄 기존 stores 개수:", prev.length, "→ 추가 후:", prev.length + newStores.length);
+            return [...prev, ...newStores];
+          });
         }
-
-        console.log(`🆕 추가된 매장 개수: ${newStores.length}`);
       })
       .catch((err) => console.error("❌ 매장 데이터 로드 실패:", err));
   }, [debouncedCenter, zoom]);
 
+  // 필터링: 지도 반경 1km 내
   const filteredStores = useMemo(() => {
-    if (
-      !window?.naver?.maps?.geometry?.spherical ||
-      !mapInstance ||
-      !stores.length ||
-      zoom < 15
-    ) {
-      console.log("🚫 거리 계산 불가 또는 조건 미달:", zoom);
+    console.log("🚧 필터링 시작:", { zoom, totalStores: stores.length });
+    if (!mapInstance || stores.length === 0 || zoom < 15) {
+      console.warn("🚫 필터링 스킵:", { mapInstance: !!mapInstance, stores: stores.length, zoom });
       return [];
     }
 
-    const center = mapInstance.getCenter();
-
-    console.log("🔍 줌레벨:", zoom);
-    console.log("🎯 지도 중심:", {
-      lat: center.lat(),
-      lng: center.lng()
-    });
+    const centerCoord = mapInstance.getCenter();
+    const cLat = centerCoord.lat();
+    const cLng = centerCoord.lng();
 
     const visible = stores.filter(({ lat, lng }, i) => {
-      const distance = window.naver.maps.geometry.spherical.computeDistanceBetween(
-        new window.naver.maps.LatLng(lat, lng),
-        center
-      );
-
-      console.log(`[${i}] (${lat}, ${lng}) ➡️ ${Math.round(distance)}m`);
-      return distance < 500;
+      const dist = haversineDistance(cLat, cLng, lat, lng);
+      console.log(`  [${i}] (${lat},${lng}) → ${Math.round(dist)}m`);
+      return dist < 1000;
     });
 
-    console.log("🧾 전체 매장 수:", stores.length);
-    console.log("📌 반경 500m 매장 수:", visible.length);
+    console.log("📌 필터링 완료 → 표시할 매장 개수:", visible.length);
     return visible;
   }, [stores, mapInstance, zoom]);
-
-
-
-  // // 필터링된 매장이 생겼을 때 → 첫 번째 매장 중심으로 지도 이동
-  // useEffect(() => {
-  //   if (selectedStore) {
-  //     setCenter({ lat: selectedStore.lat, lng: selectedStore.lng });
-  //   } else if (filteredStores.length > 0) {
-  //     const first = filteredStores[0];
-  //     setCenter({ lat: first.lat, lng: first.lng });
-  //   }
-  // }, [filteredStores, selectedStore]);
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <div className="flex flex-1">
-        {/* 왼쪽 사이드바 */}
+        {/* 사이드바 */}
         <div className="w-[300px] bg-white shadow px-4 py-6 overflow-y-auto">
           <DirectionsBox onSearch={setSearchTerm} stores={stores} />
           <div className="mt-6 space-y-4">
@@ -471,16 +472,11 @@ function Tab2MapPage() {
                   <h2 className="font-bold">{store.name}</h2>
                   <p className="text-sm text-gray-600">{store.address}</p>
                   <button
-                    onClick={() => {
-                      // 내장 네이버 지도 API 길찾기 기능 사용
-                      if (window.showDirections) {
-                        window.showDirections(store.lat, store.lng);
-                      } else {
-                        // 지도가 아직 로드되지 않은 경우 안내 메시지
-                        alert("지도가 로드 중입니다. 잠시 후 다시 시도해주세요.");
-                      }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.showDirections?.(store.lat, store.lng);
                     }}
-                    className="mt-2 inline-block px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+                    className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
                   >
                     🚗 길찾기
                   </button>
@@ -491,16 +487,15 @@ function Tab2MapPage() {
         </div>
 
         {/* 지도 */}
-         <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
-           <div className="w-full h-full">
-             <NaverMap
-                stores={canRenderMarkers ? filteredStores : []}
-                center={center}
-                selected={selectedStore}
-                onMapLoad={setMapInstance}
-                onMapCenterChange={setCenter}
-            />
-          </div>
+        <div className="flex-1 relative bg-gray-100" style={{ height: "calc(100vh - 64px)" }}>
+          <NaverMap
+            stores={filteredStores}
+            center={center}
+            selected={selectedStore}
+            onMapLoad={setMapInstance}
+            onGeometryReady={() => setGeometryReady(true)}
+            onMapCenterChange={setCenter}
+          />
         </div>
       </div>
     </div>
