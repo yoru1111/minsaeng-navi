@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CATEGORIES = [
   { key: 'food', label: '음식', img: '🍔' },
@@ -15,12 +15,18 @@ const CATEGORIES = [
   { key: 'etc', label: '기타', img: '✨' },
 ];
 
-function CategorySelector({ onChange }) {
-  const [selected, setSelected] = useState([]);
+function CategorySelector({ onChange, initialValues = [] }) {
+  const [selected, setSelected] = useState(initialValues);
+
+  // 초기값이 변경되면 상태 업데이트
+  useEffect(() => {
+    setSelected(initialValues);
+  }, [initialValues]);
 
   const handleCheck = (key) => {
     setSelected((prev) => {
       const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      console.log('카테고리 선택 변경:', { key, prev, next });
       if (onChange) onChange(next);
       return next;
     });

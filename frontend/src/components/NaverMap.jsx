@@ -7,7 +7,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [infoWindows, setInfoWindows] = useState([]);
-
+  
   const onZoomIn = () => {
     if (map) {
       map.setZoom(map.getZoom() + 1);
@@ -150,135 +150,157 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     routeInfos.forEach(info => info.remove());
   }, [directions]);
 
-  // 마커 생성
+  // 마커 생성 (성능 최적화)
   const createMarkers = useCallback(() => {
-    if (!map) return;
+    if (!map || !stores || stores.length === 0) return;
 
-    // 기존 마커들 제거
-    markers.forEach(({ marker }) => marker.setMap(null));
-    infoWindows.forEach(infoWindow => infoWindow.close());
+    console.time('마커 생성 시간');
+
+    // 기존 마커들 제거 (배치 처리)
+    setMarkers(prevMarkers => {
+      if (prevMarkers.length > 0) {
+        console.log(`기존 마커 ${prevMarkers.length}개 제거 중...`);
+        prevMarkers.forEach(({ marker }) => {
+          if (marker && marker.setMap) {
+            marker.setMap(null);
+          }
+        });
+      }
+      return [];
+    });
 
     const newMarkers = [];
-    const newInfoWindows = [];
+    const validStores = stores.filter(store => 
+      store.lat && store.lng && !isNaN(store.lat) && !isNaN(store.lng)
+    );
 
-    stores.forEach((store) => {
+    console.log(`유효한 매장 ${validStores.length}개 마커 생성 중...`);
+
+    // 모든 유효한 매장에 대해 마커 생성
+    const processedStores = validStores;
+
+    processedStores.forEach((store) => {
       // 사용 가능 여부에 따른 마커 색상 결정
       const isAvailable = store.available || store.usable_with_fund || store.accepts_paper || store.accepts_mobile;
-      const markerColor = isAvailable ? "#28a745" : "#6c757d"; // 사용가능: 초록, 불가능: 회색
+      const markerColor = isAvailable ? "#28a745" : "#6c757d";
       
-      // 마커 생성
+      // 심플한 마커 생성 (초기에는 지도에 추가하지 않음)
       const marker = new window.naver.maps.Marker({
         position: new window.naver.maps.LatLng(store.lat, store.lng),
-        map: map,
+        map: null, // 초기에는 숨김
         icon: {
           content: `
             <div style="
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              transform: translate(-50%, -100%);
-              pointer-events: none;
-              z-index: 1;
-            ">
-              <div style="
-                font-size: 12px;
-                background: white;
-                border: 1px solid #ccc;
-                padding: 2px 6px;
-                border-radius: 4px;
-                white-space: nowrap;
-                margin-bottom: 4px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-                pointer-events: none;
-              ">
-                ${store.name}
-              </div>
-              <div style="
-                width: 16px;
-                height: 16px;
-                background: ${markerColor};
-                border-radius: 50%;
-                border: 2px solid white;
-                pointer-events: auto;
-                cursor: pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-              ">
-              </div>
-            </div>
+              width: 14px;
+              height: 14px;
+              background: ${markerColor};
+              border-radius: 50%;
+              border: 2px solid white;
+              cursor: pointer;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+              transform: translate(-50%, -50%);
+            "></div>
           `,
-          size: new window.naver.maps.Size(40, 40),
-          anchor: new window.naver.maps.Point(20, 40),
+          size: new window.naver.maps.Size(18, 18),
+          anchor: new window.naver.maps.Point(9, 9),
         },
       });
 
-      // 취급 여부 정보 생성
-      const paymentMethods = [];
-      if (store.usable_with_fund) paymentMethods.push("충전식 카드");
-      if (store.accepts_paper) paymentMethods.push("지류");
-      if (store.accepts_mobile) paymentMethods.push("모바일");
-      
-      const paymentText = paymentMethods.length > 0 
-        ? paymentMethods.join(", ") 
-        : "취급하지 않음";
-      
-      // 정보창 생성
-      const infoWindow = new window.naver.maps.InfoWindow({
-        content: `
-          <div style="padding: 12px; min-width: 250px;">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333;">
-              ${store.name}
-            </div>
-            <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
-              ${store.address}
-            </div>
-            <div style="font-size: 12px; color: #888; margin-bottom: 8px;">
-              카테고리: ${store.category}
-            </div>
-            <div style="font-size: 12px; color: ${isAvailable ? '#28a745' : '#dc3545'}; margin-bottom: 12px; font-weight: bold;">
-              💳 결제 수단: ${paymentText}
-            </div>
-            <div style="display: flex; gap: 8px;">
+      // 취급 여부 정보 생성 (지연 로딩)
+      const createInfoWindow = () => {
+        const paymentMethods = [];
+        if (store.usable_with_fund) paymentMethods.push("충전식 카드");
+        if (store.accepts_paper) paymentMethods.push("지류");
+        if (store.accepts_mobile) paymentMethods.push("모바일");
+        
+        const paymentText = paymentMethods.length > 0 
+          ? paymentMethods.join(", ") 
+          : "취급하지 않음";
+        
+        return new window.naver.maps.InfoWindow({
+          content: `
+            <div style="padding: 12px; min-width: 200px;">
+              <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">
+                ${store.name}
+              </div>
+              <div style="font-size: 12px; color: #666; margin-bottom: 6px;">
+                ${store.address}
+              </div>
+              <div style="font-size: 11px; color: ${isAvailable ? '#28a745' : '#dc3545'}; margin-bottom: 8px;">
+                💳 ${paymentText}
+              </div>
               <button onclick="window.showDirections(${store.lat}, ${store.lng})" 
-                      style="
-                        background: #007bff; 
-                        color: white; 
-                        border: none; 
-                        padding: 6px 12px; 
-                        border-radius: 4px; 
-                        cursor: pointer;
-                        font-size: 12px;
-                      ">
+                      style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
                 🚗 길찾기
               </button>
-              <button onclick="window.clearDirections()" 
-                      style="
-                        background: #6c757d; 
-                        color: white; 
-                        border: none; 
-                        padding: 6px 12px; 
-                        border-radius: 4px; 
-                        cursor: pointer;
-                        font-size: 12px;
-                      ">
-                🗑️ 경로 지우기
-              </button>
             </div>
-          </div>
-        `,
-      });
+          `,
+        });
+      };
 
-      // 마커 클릭 이벤트
+      // 마커 클릭 이벤트 (정보창은 지연 생성)
+      let infoWindow = null;
       window.naver.maps.Event.addListener(marker, 'click', () => {
+        if (!infoWindow) {
+          infoWindow = createInfoWindow();
+        }
         infoWindow.open(map, marker);
       });
 
       newMarkers.push({ marker, store });
-      newInfoWindows.push(infoWindow);
     });
 
+    console.log(`마커 ${newMarkers.length}개 생성 완료`);
     setMarkers(newMarkers);
-    setInfoWindows(newInfoWindows);
-  }, [map, markers, infoWindows, stores]);
+    
+    console.timeEnd('마커 생성 시간');
+    
+    // 초기 마커 업데이트 수행 (다음 프레임에서)
+    requestAnimationFrame(() => {
+      updateMarkers(map, newMarkers);
+    });
+  }, [map, stores]);
+
+  // 마커 표시/숨김 최적화 함수들
+  const showMarker = useCallback((map, marker) => {
+    // 지도에 표시되어있는지 확인
+    if (marker.getMap()) return;
+    // 표시되어있지 않다면 오버레이를 지도에 추가
+    marker.setMap(map);
+  }, []);
+
+  const hideMarker = useCallback((marker) => {
+    // 지도에 표시되어있는지 확인
+    if (!marker.getMap()) return;
+    // 표시되어있다면 오버레이를 지도에서 삭제
+    marker.setMap(null);
+  }, []);
+
+  const updateMarkers = useCallback((map, markersArray) => {
+    if (!map || !markersArray) return;
+    
+    // 현재 지도의 화면 영역을 mapBounds 변수에 저장
+    const mapBounds = map.getBounds();
+    
+    // 마커 객체 배열을 순회하며 각 마커의 위치를 확인
+    markersArray.forEach(({ marker }) => {
+      const position = marker.getPosition();
+      
+      // mapBounds와 비교하며 마커가 현재 화면에 보이는 영역에 있는지 확인
+      if (mapBounds.hasPoint(position)) {
+        // 보이는 영역에 있다면 마커 표시
+        showMarker(map, marker);
+      } else {
+        // 숨겨진 영역에 있다면 마커 숨김
+        hideMarker(marker);
+      }
+    });
+  }, [showMarker, hideMarker]);
+
+  // 지도 이동 이벤트 핸들러
+  const idleHandler = useCallback(() => {
+    updateMarkers(map, markers);
+  }, [map, markers, updateMarkers]);
 
   // 네이버 지도 초기화
   useEffect(() => {
@@ -351,7 +373,22 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     if (map) {
       createMarkers();
     }
-  }, [stores, map, createMarkers]);
+  }, [createMarkers, map]);
+
+  // 지도 이동 이벤트 등록 (성능 최적화)
+  useEffect(() => {
+    if (map) {
+      const moveEventListener = window.naver.maps.Event.addListener(
+        map,
+        'idle',
+        idleHandler
+      );
+      
+      return () => {
+        window.naver.maps.Event.removeListener(moveEventListener);
+      };
+    }
+  }, [map, idleHandler]);
 
   // 선택된 매장에 지도 중심 이동
   useEffect(() => {
