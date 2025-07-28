@@ -402,7 +402,7 @@ const createMarkers = useCallback(() => {
     });
 
 
-    // 마커 클릭 이벤트 등록
+    // 마커 클릭 이벤트 등록 dd
     window.naver.maps.Event.addListener(marker, "click", () => {
       infoWindow.open(map, marker);
     });
