@@ -50,9 +50,21 @@ function Tab1SelectPage() {
         </div>
 
         <h1 className="text-2xl font-bold mb-4">관심분야 선택</h1>
+        
+        {/* 선택된 카테고리 표시 */}
+        {categories.length > 0 && (
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-700 font-medium">
+              선택된 관심분야: {categories.join(', ')}
+            </p>
+          </div>
+        )}
+        
         <CategorySelector
+          initialValues={categories}
           onChange={(selected) => {
             setTimeout(() => {
+              console.log('Tab1에서 받은 카테고리:', selected);
               setCategories(selected);
               setError(""); // 관심분야 선택 시 에러 메시지 제거
             }, 0);

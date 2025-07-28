@@ -8,12 +8,18 @@ router.get('/', async (req, res) => {
   const { 
     lat, 
     lng, 
-    radius = 1000, 
+    radius = 3000, 
     usable = 'true',
+    limit = 100,
     area,
     si,
     category
   } = req.query;
+
+   // 디버깅 로그
+   console.log("📍 매장 조회 요청:", {
+    lat, lng, radius, usable, area, si, category, limit
+  });
 
   // 위치 기반 검색과 지역/카테고리 필터링을 모두 지원
   let query = {};
@@ -39,17 +45,16 @@ router.get('/', async (req, res) => {
     query.si = si;
   }
 
-  // 카테고리 필터링
-  if (category) {
-    query.category = category;
-  }
 
   // 사용 가능 여부 필터링 (충전식 카드, 지류, 모바일 중 하나라도 Y인 경우)
   if (usable === 'true') {
     query.$or = [
       { usable_with_fund: true },
+      { supports_rechargeable_card: true },
       { accepts_paper: true },
-      { accepts_mobile: true }
+      { supports_paper_voucher: true },
+      { accepts_mobile: true },
+      { supports_mobile_payment: true }
     ];
   }
 
@@ -61,7 +66,7 @@ router.get('/', async (req, res) => {
       storesQuery = storesQuery.sort({ name: 1 });
     }
     
-    const stores = await storesQuery.limit(100);
+    const stores = await storesQuery;
 
             // 각 매장에 사용 가능 여부와 좌표 정보 추가
         const storesWithAvailability = stores.map(store => {
@@ -73,13 +78,18 @@ router.get('/', async (req, res) => {
           const isAvailable = usableFund || acceptsPaper || acceptsMobile;
           
           return {
-            ...store.toObject(),
+            _id: store._id,
+            name: store.name,
+            address: store.address,
+            category: store.category,
+            area: store.area,
+            si: store.si,
             available: isAvailable,
             usable_with_fund: usableFund,
             accepts_paper: acceptsPaper,
             accepts_mobile: acceptsMobile,
-            lat: store.location && store.location.coordinates ? store.location.coordinates[1] : 0,
-            lng: store.location && store.location.coordinates ? store.location.coordinates[0] : 0
+            lat: store.location?.coordinates?.[1] || 0,
+            lng: store.location?.coordinates?.[0] || 0,
           };
         });
 
