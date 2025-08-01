@@ -14,20 +14,45 @@ function Tab3SettingsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("⚙️ Tab3에서 받은 location.state:", location.state);
     if (location.state) {
       setArea(location.state.area || "");
       setSi(location.state.si || "");
       setCategories(location.state.categories || []);
+      console.log("⚙️ Tab3 초기 상태 설정 완료:", {
+        area: location.state.area,
+        si: location.state.si,
+        categories: location.state.categories
+      });
     }
   }, [location.state]);
 
   const handleSaveSettings = () => {
-    if (!area || !si || categories.length === 0) {
-      setError("지역과 관심분야를 모두 선택해주세요.");
+    // 세종특별자치시는 시군구 선택 없이도 허용
+    const isSejong = area === "세종특별자치시";
+    
+    // 지역 선택 여부 확인 (세종특별자치시는 시군구 필요 없음)
+    const isAreaComplete = area && (isSejong || si);
+    const isCategoriesComplete = categories.length > 0;
+    
+    // 세분화된 오류 메시지
+    if (!isAreaComplete && !isCategoriesComplete) {
+      setError("지역과 관심분야를 선택해주세요.");
+      return;
+    } else if (!isAreaComplete) {
+      setError("지역을 선택해주세요.");
+      return;
+    } else if (!isCategoriesComplete) {
+      setError("관심분야를 선택해주세요.");
       return;
     }
+    
     setError("");
-    navigate("/map", { state: { area, si, categories } });
+    
+    const newState = { area, si: isSejong ? "" : si, categories };
+    console.log("💾 Tab3에서 설정 저장:", newState);
+    console.log("🔄 Tab2로 이동 중...");
+    navigate("/map", { state: newState });
   };
 
   const handleBackToMap = () => {
@@ -45,7 +70,7 @@ function Tab3SettingsPage() {
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <h2 className="text-lg font-semibold text-blue-800 mb-2">현재 설정</h2>
             <p className="text-blue-700">
-              <strong>지역:</strong> {area} {si && `> ${si}`}
+              <strong>지역:</strong> {area} {si && area !== "세종특별자치시" && `> ${si}`}
             </p>
             <p className="text-blue-700">
               <strong>관심분야:</strong> {categories.length > 0 ? categories.join(', ') : '없음'}
@@ -63,16 +88,20 @@ function Tab3SettingsPage() {
           <div className="mb-8">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">지역 변경</h2>
             <div className="flex justify-center">
-              <AreaSelector onSelect={({ type, value, parent }) => {
-                console.log('Tab3에서 받은 지역 선택:', { type, value, parent });
-                if (type === 'do') {
-                  setArea(value);
-                  setSi(""); // 도 변경시 시 초기화
-                } else if (type === 'si') {
-                  setSi(value);
-                }
-                setError("");
-              }} />
+              <AreaSelector 
+                initialDo={area}
+                initialSi={si}
+                onSelect={({ type, value, parent }) => {
+                  console.log('Tab3에서 받은 지역 선택:', { type, value, parent });
+                  if (type === 'do') {
+                    setArea(value);
+                    setSi(""); // 도 변경시 시 초기화
+                  } else if (type === 'si') {
+                    setSi(value);
+                  }
+                  setError("");
+                }} 
+              />
             </div>
           </div>
 
