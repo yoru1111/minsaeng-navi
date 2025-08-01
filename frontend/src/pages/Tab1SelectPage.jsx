@@ -12,15 +12,30 @@ function Tab1SelectPage() {
   const [error, setError] = useState(""); // 경고 문구 상태 추가
 
   const handleMapClick = () => {
-    if (!area || !si || categories.length === 0) {
-      setError("지역/관심분야 을/를 선택해주세요.");
+    // 세종특별자치시는 시군구 선택 없이도 허용
+    const isSejong = area === "세종특별자치시";
+    
+    // 지역 선택 여부 확인 (세종특별자치시는 시군구 필요 없음)
+    const isAreaComplete = area && (isSejong || si);
+    const isCategoriesComplete = categories.length > 0;
+    
+    // 세분화된 오류 메시지
+    if (!isAreaComplete && !isCategoriesComplete) {
+      setError("지역과 관심분야를 선택해주세요.");
+      return;
+    } else if (!isAreaComplete) {
+      setError("지역을 선택해주세요.");
+      return;
+    } else if (!isCategoriesComplete) {
+      setError("관심분야를 선택해주세요.");
       return;
     }
+    
     setError(""); // 에러 초기화
     navigate("/map", {
       state: {
         area,       // 도
-        si,         // 시/군/구
+        si: isSejong ? "" : si,         // 세종특별자치시는 빈 문자열
         categories  // ['food', 'it', ...]
       }
     });
@@ -35,11 +50,11 @@ function Tab1SelectPage() {
           <AreaSelector
             onSelect={({ type, value, parent }) => {
               setTimeout(() => {
-                if (type === "도") {
+                if (type === "do") {
                   setArea(value);
                   setSi('');
                 }
-                if (type === "시") {
+                if (type === "si") {
                   setArea(parent);
                   setSi(value);
                 }
@@ -71,11 +86,12 @@ function Tab1SelectPage() {
           }}
         />
 
-        <div className="h-6 flex items-center justify-center">
-          {error && (
-            <div className="text-red-500 font-semibold">{error}</div>
-          )}
-        </div>
+        {/* 오류 메시지 */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded max-w-xs mx-auto">
+            {error}
+          </div>
+        )}
 
         <button
           onClick={handleMapClick}

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
-function NaverMap({ stores, center, selected, onMapLoad }) {
+function NaverMap({ stores, center, selected, onMapLoad, onClearSelection }) {
   const mapRef = useRef(null);
   const [directions, setDirections] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
+  const [currentInfoWindow, setCurrentInfoWindow] = useState(null);
+  const lastStoresRef = useRef(null);
 
   const onZoomIn = () => {
     if (map) {
@@ -352,7 +354,7 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
             font-size: 14px;
             min-width: 200px;
           ">
-            <div style="font-weight: bold; color: #5347AA; margin-bottom: 8px;">🚗 길찾기 결과</div>
+            <div style="font-weight: bold; color: #5347AA; margin-bottom: 8px;">길찾기 결과</div>
             <div style="margin-bottom: 5px;"><strong>총 거리:</strong> ${distance}km</div>
             <div style="margin-bottom: 10px;"><strong>예상 시간:</strong> ${duration}분</div>
             <button onclick="this.parentElement.remove()" style="
@@ -426,11 +428,38 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     routeInfos.forEach(info => info.remove());
   }, [directions]);
 
-  // 마커 생성 (성능 최적화)
+  // 현재 열린 정보창 닫기
+  const closeCurrentInfoWindow = useCallback(() => {
+    if (currentInfoWindow) {
+      currentInfoWindow.close();
+      setCurrentInfoWindow(null);
+    }
+    if (onClearSelection) {
+      onClearSelection();
+    }
+  }, [currentInfoWindow, onClearSelection]);
+
+  // 마커 생성 (성능 최적화 - 캐싱 적용)
   const createMarkers = useCallback(() => {
     if (!map || !stores || stores.length === 0) return;
 
+    // stores 데이터가 실제로 변경되었는지 확인
+    const storesKey = JSON.stringify(stores.map(s => ({ 
+      _id: s._id, 
+      name: s.name, 
+      lat: s.lat, 
+      lng: s.lng 
+    })));
+    
+    if (lastStoresRef.current === storesKey) {
+      // 데이터가 동일하면 마커 재생성하지 않음
+      console.log('매장 데이터 동일 - 마커 재생성 생략');
+      return;
+    }
+
+    console.log('매장 데이터 변경 감지 - 마커 재생성 시작');
     console.time('마커 생성 시간');
+    lastStoresRef.current = storesKey;
 
     // 기존 마커들 제거 (배치 처리)
     setMarkers(prevMarkers => {
@@ -517,10 +546,17 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
       // 마커 클릭 이벤트 (정보창은 지연 생성)
       let infoWindow = null;
       window.naver.maps.Event.addListener(marker, 'click', () => {
+        // 기존 열린 정보창 닫기
+        if (currentInfoWindow) {
+          currentInfoWindow.close();
+        }
+        
+        // 새로운 정보창 생성 및 열기
         if (!infoWindow) {
           infoWindow = createInfoWindow();
         }
         infoWindow.open(map, marker);
+        setCurrentInfoWindow(infoWindow);
       });
 
       newMarkers.push({ marker, store });
@@ -638,6 +674,9 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     document.head.appendChild(script);
 
     return () => {
+      // 캐시 초기화
+      lastStoresRef.current = null;
+      
       if (document.head.contains(script)) {
         document.head.removeChild(script);
       }
@@ -650,6 +689,17 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
       createMarkers();
     }
   }, [createMarkers, map]);
+
+  // 컴포넌트 언마운트 시 마커 정리
+  useEffect(() => {
+    return () => {
+      markers.forEach(({ marker }) => {
+        if (marker && marker.setMap) {
+          marker.setMap(null);
+        }
+      });
+    };
+  }, [markers]);
 
   // 지도 이동 이벤트 등록 (성능 최적화)
   useEffect(() => {
@@ -666,13 +716,37 @@ function NaverMap({ stores, center, selected, onMapLoad }) {
     }
   }, [map, idleHandler]);
 
-  // 선택된 매장에 지도 중심 이동
+  // 지도 클릭 이벤트 등록 (매장 정보창 닫기)
   useEffect(() => {
-    if (selected && map) {
-      const target = markers.find((m) => m.store.id === selected.id);
+    if (map) {
+      const clickEventListener = window.naver.maps.Event.addListener(
+        map,
+        'click',
+        closeCurrentInfoWindow
+      );
+      
+      return () => {
+        window.naver.maps.Event.removeListener(clickEventListener);
+      };
+    }
+  }, [map, closeCurrentInfoWindow]);
+
+  // 선택된 매장에 지도 중심 이동 및 정보창 열기
+  useEffect(() => {
+    if (selected && map && markers.length > 0) {
+      // _id 또는 name으로 매장 찾기 (id 필드가 없을 수 있음)
+      const target = markers.find((m) => 
+        m.store._id === selected._id || 
+        (m.store.name === selected.name && m.store.address === selected.address)
+      );
+      
       if (target) {
+        // 지도 중심 이동
         map.setCenter(target.marker.getPosition());
         map.setZoom(16);
+        
+        // 마커 클릭 이벤트 트리거 (정보창 열기)
+        window.naver.maps.Event.trigger(target.marker, 'click');
       }
     }
   }, [selected, map, markers]);
