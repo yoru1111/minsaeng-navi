@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const DO_SI_MAP = {
   '서울특별시': ['종로구', '중구', '용산구', '성동구', '광진구', '동대문구', '중랑구', '성북구', '강북구', '도봉구', '노원구', '은평구', '서대문구', '마포구', '양천구', '강서구', '구로구', '금천구', '영등포구', '동작구', '관악구', '서초구', '강남구', '송파구', '강동구'],
@@ -22,18 +22,24 @@ const DO_SI_MAP = {
 
 const DO_LIST = Object.keys(DO_SI_MAP);
 
-function AreaSelector({ onSelect }) {
-  const [selectedDo, setSelectedDo] = useState('');
-  const [selectedSi, setSelectedSi] = useState('');
+function AreaSelector({ onSelect, initialDo = '', initialSi = '' }) {
+  const [selectedDo, setSelectedDo] = useState(initialDo);
+  const [selectedSi, setSelectedSi] = useState(initialSi);
+
+  // 초기값이 변경될 때 상태 업데이트
+  useEffect(() => {
+    setSelectedDo(initialDo);
+    setSelectedSi(initialSi);
+  }, [initialDo, initialSi]);
 
   const handleDoChange = (e) => {
     setSelectedDo(e.target.value);
     setSelectedSi(''); // 도를 바꾸면 시/군/구 선택 초기화
-    if (onSelect) onSelect({ type: '도', value: e.target.value });
+    if (onSelect) onSelect({ type: 'do', value: e.target.value });
   };
   const handleSiChange = (e) => {
     setSelectedSi(e.target.value);
-    if (onSelect) onSelect({ type: '시', value: e.target.value, parent: selectedDo });
+    if (onSelect) onSelect({ type: 'si', value: e.target.value, parent: selectedDo });
   };
 
   return (
@@ -48,7 +54,7 @@ function AreaSelector({ onSelect }) {
           <option key={d} value={d}>{d}</option>
         ))}
       </select>
-      {selectedDo && (
+      {selectedDo && selectedDo !== "세종특별자치시" && (
         <select
           className="w-full border p-2 rounded"
           value={selectedSi}

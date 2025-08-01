@@ -303,25 +303,36 @@ function Tab2MapPage() {
     }
   }, [mapInstance, regionCenterMap, siCenterMap]);
 
-  // 초기: 도 단위 중심 설정
+  // 초기: 도 단위 중심 설정 및 상태 초기화
   useEffect(() => {
+    console.log("🌍 [Tab2] location 변경 감지");
     if (location.state?.area) {
       const region = location.state.area;
       const si = location.state.si;
+      console.log(`🗺️ [Tab2] 지역 이동: ${region} > ${si || '전체'}`);
       moveToRegion(region, si);
+      
+      // 지역이 변경되었으므로 이전 선택 상태 초기화
+      setSelectedStore(null);
+      setSearchTerm("");
+      console.log("✅ [Tab2] 상태 초기화 완료");
+    } else {
+      console.log("❌ [Tab2] location.state.area가 없음");
     }
-  }, [location.state, moveToRegion]);
+  }, [location, moveToRegion]);
 
   // 매장 데이터 로드 (백엔드에서 필터링하여 가져오기)
   useEffect(() => {
-    console.log("매장 데이터 로딩 시작...");
+    console.log("📊 매장 데이터 로딩 시작...");
+    console.log("📊 현재 location.state:", location.state);
     
     // URL 파라미터 구성
     const params = new URLSearchParams();
     if (location.state?.area) {
       params.append('area', location.state.area);
     }
-    if (location.state?.si) {
+    // 세종특별자치시가 아닐 때만 si 파라미터 추가
+    if (location.state?.si && location.state.area !== "세종특별자치시") {
       params.append('si', location.state.si);
     }
     if (location.state?.categories?.length > 0) {
@@ -349,7 +360,7 @@ function Tab2MapPage() {
         alert("서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.");
         setStores([]); // 빈 배열로 설정
       });
-  }, [location.state]);
+  }, [location]);
 
   // 필터링된 매장 (간소화 - 백엔드에서 대부분 처리됨)
   const filteredStores = useMemo(() => {
@@ -367,15 +378,14 @@ function Tab2MapPage() {
     );
   }, [stores, searchTerm]);
 
-  // 필터링된 매장이 생겼을 때 → 첫 번째 매장 중심으로 지도 이동
+  // 선택된 매장이 있을 때만 지도 중심 이동 (선택 해제 시에는 현재 위치 유지)
   useEffect(() => {
     if (selectedStore) {
       setCenter({ lat: selectedStore.lat, lng: selectedStore.lng });
-    } else if (filteredStores.length > 0) {
-      const first = filteredStores[0];
-      setCenter({ lat: first.lat, lng: first.lng });
     }
-  }, [filteredStores, selectedStore]);
+    // selectedStore가 null이 될 때는 지도 위치를 변경하지 않아서
+    // 사용자가 보던 위치 그대로 유지됨
+  }, [selectedStore]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -395,7 +405,14 @@ function Tab2MapPage() {
           </div>
           
           {/* 스크롤 가능한 매장 목록 */}
-          <div className="flex-1 overflow-y-auto">
+          <div 
+            className="flex-1 overflow-y-scroll" 
+            style={{ 
+              maxHeight: 'calc(100vh - 170px)',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#9ca3af #e5e7eb'
+            }}
+          >
             {filteredStores.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 <div className="text-4xl mb-4">🏪</div>
@@ -415,10 +432,6 @@ function Tab2MapPage() {
                     className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                     onClick={() => {
                       setSelectedStore(store);
-                      if (mapInstance && store.lat && store.lng) {
-                        mapInstance.setCenter(new window.naver.maps.LatLng(store.lat, store.lng));
-                        mapInstance.setZoom(16);
-                      }
                     }}
                   >
                     <div className="flex items-start justify-between">
@@ -459,7 +472,7 @@ function Tab2MapPage() {
                           }}
                           className="mt-2 inline-flex items-center px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
                         >
-                          🚗 길찾기
+                          길찾기
                         </button>
                       </div>
                       <div className={`w-3 h-3 rounded-full ml-3 mt-1 flex-shrink-0 ${
@@ -480,6 +493,7 @@ function Tab2MapPage() {
               center={center}
               selected={selectedStore}
             onMapLoad={setMapInstance}
+            onClearSelection={() => setSelectedStore(null)}
             />
         </div>
       </div>
